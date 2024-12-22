@@ -38,19 +38,25 @@ export const ConnectorButton = () => {
                 );
               }
               return (
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div className={'flex'}>
                   <button
                     onClick={openChainModal}
                     className={
                       'bg-primary px-4 py-1 rounded-l-lg text-xl border-2 border-black flex items-center gap-3'
                     }
                   >
-                    {/*{chain.iconUrl && (*/}
-                    {/*  <Image alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} width={30} height={30} />*/}
-                    {/*)}*/}
+                    {chain.iconUrl && (
+                      <Image alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} width={30} height={30} />
+                    )}
                     {chain.name}
                   </button>
-                  <button onClick={openAccountModal} type="button" className={'flex items-center gap-1'}>
+                  <button
+                    onClick={openAccountModal}
+                    type="button"
+                    className={
+                      'flex items-center gap-1 bg-white px-2 py-2 rounded-r-lg border-2 border-black font-roboto'
+                    }
+                  >
                     <Image src={'/avatar.png'} alt={'avatar'} width={36} height={36} />
                     {account.displayName}
                   </button>

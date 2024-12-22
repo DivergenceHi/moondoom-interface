@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectorButton } from '@/components/connector-button';
 
 export const Header = () => {
   return (
@@ -16,8 +16,7 @@ export const Header = () => {
           <Image src={'/logo.png'} alt={'logo'} width={119} height={49} />
           <button className={'bg-primary px-6 py-1 rounded-lg text-xl border-2 border-black ml-4'}>How it works</button>
           <div className="ml-auto flex">
-            {/*<ConnectorButton />*/}
-            <ConnectButton />
+            <ConnectorButton />
           </div>
         </div>
       </div>
