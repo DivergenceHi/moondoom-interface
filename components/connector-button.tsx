@@ -1,7 +1,6 @@
 'use client';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
-import { EthIcon } from '@/components/icons/eth';
 
 export const ConnectorButton = () => {
   return (

@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { ConnectorButton } from '@/components/connector-button';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export const Header = () => {

@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 export const AddLiquidity = ({ show }: { show: boolean }) => {
   const [amount, setAmount] = useState('');
+  console.log(amount);
+
   return (
     <div className={`grid grid-cols-2 gap-1 -mt-[2px] w-full font-roboto ${show ? '' : 'hidden'}`}>
       <div className={'bg-cyan px-8 pt-4 pb-12 border-2 border-black rounded-b-2xl'}>

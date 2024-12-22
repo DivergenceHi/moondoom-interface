@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowDownIcon, DoubleArrowUpIcon, ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
+import { ArrowDownIcon, ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
 
 export const Trade = ({ show }: { show: boolean }) => {
   const [amount, setAmount] = useState('');
+  console.log(amount);
 
   return (
     <div
