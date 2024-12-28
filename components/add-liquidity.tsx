@@ -36,7 +36,7 @@ export const AddLiquidity = ({ show }: { show: boolean }) => {
   });
 
   const isSpear = true;
-  const min = '0.5';
+  const min = '0.01';
   const max = '0.99';
   const x96 = getSqrtPriceX96FromMin(isSpear, min.toString());
 
@@ -157,6 +157,7 @@ export const AddLiquidity = ({ show }: { show: boolean }) => {
               type="text"
               placeholder={'0.0'}
               className={'bg-transparent outline-none appearance-none text-lg w-full'}
+              value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
             <div className="flex ml-auto">
