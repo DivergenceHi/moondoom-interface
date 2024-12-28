@@ -16,3 +16,32 @@ body {
 .shadow {
   @apply shadow-md;
 }
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.bg-md-gradient-primary {
+  @apply bg-gradient-to-r from-primary-left to-primary-right;
+}
+
+.bg-md-gradient-danger {
+  @apply bg-gradient-to-r from-danger-left to-danger-right;
+}
+
+.text-md-border {
+  -webkit-text-stroke: 1px black;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.btn-md-primary {
+  @apply flex items-center justify-center gap-2 text-md-border bg-md-gradient-primary font-chela text-white text-3xl text-center py-1 w-full rounded-lg border-2 border-black mt-4 shadow-2xl disabled:grayscale disabled:cursor-not-allowed;
+}
+
+.btn-md-danger {
+  @apply text-md-border bg-md-gradient-danger font-chela text-white text-2xl text-center py-1 w-full rounded-lg border-2 border-black mt-4 shadow-2xl disabled:grayscale disabled:cursor-not-allowed;
+}
+
+.text-symbol {
+  @apply font-semibold text-sm font-roboto;
+}

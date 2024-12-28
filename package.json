@@ -17,7 +17,9 @@
     "dayjs": "^1.11.13",
     "next": "15.1.2",
     "react": "^19.0.0",
+    "react-countdown": "^2.3.6",
     "react-dom": "^19.0.0",
+    "recharts": "^2.15.0",
     "sonner": "^1.7.1",
     "viem": "^2.21.54",
     "wagmi": "^2.13.5"

@@ -10,11 +10,12 @@ import clsx from 'clsx';
 import { calculatePriceChange, calculateSevenDayChanges, ellipseAddress } from '@/lib/display';
 import { getPriceFromSqrtPriceX96 } from '@divergence-protocol/diver-sdk';
 import { BigNumber } from 'bignumber.js';
+import { AddLiquidity } from '@/components/add-liquidity';
 
 export default function Home() {
   const [show, setShow] = useState(false);
   const [showTrade, setShowTrade] = useState(false);
-  const { battles } = useBattles();
+  const { battles, isLoading } = useBattles();
   const [category, setCategory] = useState('doomer');
   const filterBattles = battles?.filter((battle) => battle.category === category);
   console.log(filterBattles);
@@ -30,21 +31,30 @@ export default function Home() {
         </div>
         <div className="flex text-white font-chela gap-4 items-center">
           <div
-            className={clsx('border-2 rounded-md border-primary pr-2 flex items-center')}
+            className={clsx('border-2 rounded-md border-primary pr-2 flex items-center cursor-pointer', {
+              'bg-primary': category === 'mooner',
+            })}
             onClick={() => setCategory('mooner')}
           >
             <Image src={'/mooner.png'} alt={'mooner'} width={32} height={32} />
             Mooners
           </div>
           <div
-            className={'border-2 rounded-md border-danger pr-2 flex items-center'}
+            className={clsx('border-2 rounded-md border-danger pr-2 flex items-center cursor-pointer', {
+              'bg-danger': category === 'doomer',
+            })}
             onClick={() => setCategory('doomer')}
           >
             <Image src={'/doomer.png'} alt={'doomer'} width={26} height={26} />
             Doomers
           </div>
           <div
-            className={'border-2 rounded-md border-[#FED237] pr-2 flex items-center text-danger px-3 text-xl'}
+            className={clsx(
+              'border-2 rounded-md border-[#FED237] pr-2 flex items-center text-danger px-3 text-xl cursor-pointer',
+              {
+                'bg-[#FED237]': category === 'trending',
+              },
+            )}
             onClick={() => setCategory('trending')}
           >
             Trending
@@ -64,6 +74,16 @@ export default function Home() {
               <div className="w-[140px] text-center">Trade</div>
               <div className="w-[100px] text-center">Liquidity</div>
             </div>
+
+            {isLoading && (
+              <div className={'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4 h-[100px]'}>
+                <div className={'w-[60px] bg-gray-100 h-[60px] animate-pulse rounded-lg'}></div>
+                <div className={'ml-4'}>
+                  <div className={'w-[60px] bg-gray-100 h-[20px] animate-pulse rounded-lg mb-2'}></div>
+                  <div className={'w-[100px] bg-gray-100 h-[20px] animate-pulse rounded-lg'}></div>
+                </div>
+              </div>
+            )}
 
             {filterBattles?.map((battle) => {
               const priceChange = calculatePriceChange(battle.past_7days[0].price, battle.current_price);
@@ -191,7 +211,7 @@ export default function Home() {
             })}
 
             <div className="px-10">
-              {/*<AddLiquidity show={show} />*/}
+              <AddLiquidity show={show} />
               <Trade show={showTrade} />
             </div>
           </div>
