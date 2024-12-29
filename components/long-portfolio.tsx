@@ -2,27 +2,48 @@ import { UpIcon } from '@/components/icons/up';
 import { DownIcon } from '@/components/icons/down';
 import { formatBalance } from '@/lib/format';
 import { WAD } from '@/constants';
+import { useQuery } from '@apollo/client';
+import { GET_USER_TRADES } from '@/graphql/trades';
+import { useAccount } from 'wagmi';
+import { parseUnits } from 'viem';
 
 export const LongPortfolio = ({
+  battleId,
   setMode,
   callAmount,
   putAmount,
   decimals,
 }: {
+  battleId: string | undefined;
   setMode: (mode: number) => void;
   callAmount: bigint;
   putAmount: bigint;
   decimals: number;
 }) => {
+  const { address } = useAccount();
   const isUp = callAmount > putAmount;
   const netAmount = isUp ? callAmount - putAmount : putAmount - callAmount;
-  console.log('netAmount', netAmount);
 
-  const costAmount = 200000n;
+  const { data } = useQuery(GET_USER_TRADES, {
+    variables: {
+      sender: address?.toLocaleLowerCase(),
+      battle: battleId?.toLocaleLowerCase(),
+    },
+  });
+
+  const trades = data?.trades;
+  const costAmount: bigint =
+    trades?.reduce((acc: bigint, trade: { amountIn: string }) => acc + parseUnits(trade.amountIn, decimals), 0n) ?? 0n;
+
   const maxAmount = callAmount > putAmount ? callAmount : putAmount;
   const isLoss = maxAmount < costAmount;
   const plAmount = isLoss ? costAmount - maxAmount : maxAmount - costAmount;
   const avgCost = netAmount > 0n ? WAD - (plAmount * WAD) / netAmount : 0n;
+
+  console.log('trades', trades, costAmount);
+
+  const payout = costAmount > 0n ? (maxAmount * 10000n) / costAmount - 10000n : 0n;
+  console.log(maxAmount, costAmount);
 
   return (
     <div>
@@ -42,7 +63,7 @@ export const LongPortfolio = ({
 
       <div className={'my-16'}>
         <div className={'text-3xl font-semibold font-roboto text-center'}>Expected Payout</div>
-        <div className={'text-primary text-center text-8xl -mt-4 font-chela text-md-border'}>+154%</div>
+        <div className={'text-primary text-center text-8xl -mt-4 font-chela text-md-border'}>+{payout / 100n}%</div>
       </div>
 
       <div className="flex justify-between mt-20">
@@ -55,7 +76,11 @@ export const LongPortfolio = ({
       </div>
       <div className="flex justify-between">
         <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>+${formatBalance(plAmount, decimals, 4)}</div>
+        {isLoss ? (
+          <div className={'text-danger'}>-${formatBalance(plAmount, decimals, 4)}</div>
+        ) : (
+          <div className={'text-primary'}>+${formatBalance(plAmount, decimals, 4)}</div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-20">

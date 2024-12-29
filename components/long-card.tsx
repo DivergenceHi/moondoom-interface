@@ -56,7 +56,6 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   const balance = data?.[0]?.result ?? 0n;
   const spearBalance = data?.[1]?.result ?? 0n;
   const shieldBalance = data?.[2]?.result ?? 0n;
-  console.log(spearBalance, shieldBalance);
 
   const tolerance = 10;
   const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_INPUT, decimals);
@@ -154,6 +153,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
           className={'bg-transparent outline-none appearance-none text-lg w-full'}
           value={formatUnits(BigInt(get), decimals)}
           disabled
+          readOnly
         />
         <div className="ml-auto text-symbol">{}</div>
       </div>

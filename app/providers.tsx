@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { base } from 'viem/chains';
 import { metaMaskWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import { ApolloProvider } from '@apollo/client';
+import { client } from '@/apollo/client';
 
 export const queryClient = new QueryClient();
 
@@ -32,13 +34,17 @@ export const config = createConfig({
   },
 });
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 export const Providers = ({ children }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Toaster position={'top-center'} duration={3000} />
-          {children}
+          <ApolloProvider client={client()}>
+            <Toaster position={'top-center'} duration={3000} />
+            {children}
+          </ApolloProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

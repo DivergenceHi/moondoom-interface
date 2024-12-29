@@ -27,6 +27,7 @@ export interface PriceData {
 
 export interface BattleResponseData {
   category?: string; // mooner, doomer, trending
+  bk?: BattleKey;
   battle_info: {
     battle: Address;
     bk: {

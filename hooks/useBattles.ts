@@ -7,7 +7,8 @@ export const useBattles = () => {
   const { data, isLoading } = useQuery<BattleResponse>({
     queryKey: ['battles'],
     queryFn: async () => getBattles(),
-    refetchInterval: 5000,
+    refetchInterval: 10000,
+    staleTime: 20000,
   });
 
   const mbs =

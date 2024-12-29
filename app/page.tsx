@@ -14,13 +14,11 @@ import { AddLiquidity } from '@/components/add-liquidity';
 
 export default function Home() {
   const [show, setShow] = useState(false);
+  const [index, setIndex] = useState(-1);
   const [showTrade, setShowTrade] = useState(false);
   const { battles, isLoading } = useBattles();
   const [category, setCategory] = useState('doomer');
   const filterBattles = battles?.filter((battle) => battle.category === category);
-  console.log(filterBattles);
-
-  console.log('all battles', battles);
 
   return (
     <div className="bg-gradient-to-r from-[rgb(10,27,40)] to-[rgb(25,63,61)] pb-20 min-h-screen">
@@ -85,135 +83,134 @@ export default function Home() {
               </div>
             )}
 
-            {filterBattles?.map((battle) => {
+            {filterBattles?.map((battle, i: number) => {
               const priceChange = calculatePriceChange(battle.past_7days[0].price, battle.current_price);
               const past7DaysPriceChanges = calculateSevenDayChanges(battle.past_7days, battle.current_price);
-              console.log(past7DaysPriceChanges);
               const shieldPrice = getPriceFromSqrtPriceX96(battle.battle_info.sqrt_price_x96);
               const spearPrice = new BigNumber(1).minus(shieldPrice);
               const shieldpayout = new BigNumber(1).div(shieldPrice);
               const spearpayout = new BigNumber(1).div(spearPrice);
 
               return (
-                <div
-                  className={'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4'}
-                  key={battle.battle_info.battle}
-                >
-                  <div className="w-[220px] flex items-center gap-4">
-                    <Image src={'/hp.png'} alt={'hp'} width={64} height={64} />
-                    <div>
-                      <div className={'text-xl font-bold font-roboto'}>{battle.battle_info.bk.underlying}</div>
-                      <div>{ellipseAddress(battle.battle_info.battle)}</div>
-                    </div>
-                  </div>
-
-                  <div className="w-[120px] font-chela text-3xl">
-                    ${parseFloat(battle.current_price).toFixed(2)}
-                    <div
-                      className={clsx('font-roboto text-sm', {
-                        'text-primary': priceChange.isPositive,
-                        'text-danger': priceChange.isNegative,
-                      })}
-                    >
-                      {priceChange.formatted}
-                    </div>
-                  </div>
-
-                  <div className="w-[200px] flex flex-col justify-center">
-                    <div className="flex items-end gap-[1px]">
-                      {past7DaysPriceChanges.map((price, i) => (
-                        <GainChart
-                          key={i}
-                          isGain={true}
-                          count={price.priceChange.isPositive ? price.normalizedValue : 0}
-                        />
-                      ))}
-                    </div>
-                    <div className={'bg-black h-[4px] w-[104px] my-[2px]'}></div>
-                    <div className="flex items-start gap-[1px]">
-                      {past7DaysPriceChanges.map((price, i) => (
-                        <GainChart
-                          key={i}
-                          isGain={false}
-                          count={price.priceChange.isNegative ? Math.abs(price.normalizedValue) : 0}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="w-[300px] flex items-center gap-4">
-                    <div className={'flex flex-col items-center'}>
-                      <div className="flex font-chela items-center">
-                        <div
-                          className={
-                            'w-[48px] h-[48px] border-2 border-primary rounded-full flex items-center justify-center bg-black text-white text-2xl z-20'
-                          }
-                        >
-                          {spearPrice.multipliedBy(100).toFixed(0)}%
-                        </div>
-                        <div
-                          className={
-                            'border-2 border-primary rounded-lg bg-black text-white text-2xl pl-14 pr-8 -ml-10 z-1'
-                          }
-                        >
-                          Up
-                        </div>
+                <div key={battle?.battle_info?.battle}>
+                  <div className={'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4'}>
+                    <div className="w-[220px] flex items-center gap-4">
+                      <Image src={'/hp.png'} alt={'hp'} width={64} height={64} />
+                      <div>
+                        <div className={'text-xl font-bold font-roboto'}>{battle.battle_info.bk.underlying}</div>
+                        <div>{ellipseAddress(battle.battle_info.battle)}</div>
                       </div>
-                      <div>Payout: {spearpayout.toFixed(2)}x</div>
                     </div>
 
-                    <div className={'flex flex-col items-center'}>
-                      <div className="flex font-chela items-center">
-                        <div
-                          className={
-                            'border-2 border-danger rounded-lg bg-black text-white text-2xl pr-8 pl-4 -mr-6 z-1'
-                          }
-                        >
-                          Down
-                        </div>
-                        <div
-                          className={
-                            'w-[48px] h-[48px] border-2 border-danger rounded-full flex items-center justify-center bg-black text-white text-2xl z-20'
-                          }
-                        >
-                          {shieldPrice.multipliedBy(100).toFixed(0)}%
-                        </div>
+                    <div className="w-[120px] font-chela text-3xl">
+                      ${parseFloat(battle.current_price).toFixed(2)}
+                      <div
+                        className={clsx('font-roboto text-sm', {
+                          'text-primary': priceChange.isPositive,
+                          'text-danger': priceChange.isNegative,
+                        })}
+                      >
+                        {priceChange.formatted}
                       </div>
-                      <div>Payout: {shieldpayout.toFixed(2)}x</div>
+                    </div>
+
+                    <div className="w-[200px] flex flex-col justify-center">
+                      <div className="flex items-end gap-[1px]">
+                        {past7DaysPriceChanges.map((price, i) => (
+                          <GainChart
+                            key={i}
+                            isGain={true}
+                            count={price.priceChange.isPositive ? price.normalizedValue : 0}
+                          />
+                        ))}
+                      </div>
+                      <div className={'bg-black h-[4px] w-[104px] my-[2px]'}></div>
+                      <div className="flex items-start gap-[1px]">
+                        {past7DaysPriceChanges.map((price, i) => (
+                          <GainChart
+                            key={i}
+                            isGain={false}
+                            count={price.priceChange.isNegative ? Math.abs(price.normalizedValue) : 0}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="w-[300px] flex items-center gap-4">
+                      <div className={'flex flex-col items-center'}>
+                        <div className="flex font-chela items-center">
+                          <div
+                            className={
+                              'w-[48px] h-[48px] border-2 border-primary rounded-full flex items-center justify-center bg-black text-white text-2xl z-20'
+                            }
+                          >
+                            {spearPrice.multipliedBy(100).toFixed(0)}%
+                          </div>
+                          <div
+                            className={
+                              'border-2 border-primary rounded-lg bg-black text-white text-2xl pl-14 pr-8 -ml-10 z-1'
+                            }
+                          >
+                            Up
+                          </div>
+                        </div>
+                        <div>Payout: {spearpayout.toFixed(2)}x</div>
+                      </div>
+
+                      <div className={'flex flex-col items-center'}>
+                        <div className="flex font-chela items-center">
+                          <div
+                            className={
+                              'border-2 border-danger rounded-lg bg-black text-white text-2xl pr-8 pl-4 -mr-6 z-1'
+                            }
+                          >
+                            Down
+                          </div>
+                          <div
+                            className={
+                              'w-[48px] h-[48px] border-2 border-danger rounded-full flex items-center justify-center bg-black text-white text-2xl z-20'
+                            }
+                          >
+                            {shieldPrice.multipliedBy(100).toFixed(0)}%
+                          </div>
+                        </div>
+                        <div>Payout: {shieldpayout.toFixed(2)}x</div>
+                      </div>
+                    </div>
+                    <div className={'w-[140px] flex justify-center'}>
+                      <button
+                        className={'border-2 border-black rounded-lg px-4 bg-primary font-chela text-2xl'}
+                        onClick={() => {
+                          setShowTrade(!showTrade);
+                          setShow(false);
+                          setIndex(i);
+                        }}
+                      >
+                        Trade
+                      </button>
+                    </div>
+                    <div className={'w-[100px] flex justify-center'}>
+                      <button
+                        onClick={() => {
+                          setShow(!show);
+                          setShowTrade(false);
+                          setIndex(i);
+                        }}
+                        className={
+                          'border-2 border-black rounded-full w-[40px] h-[40px] flex items-center justify-center font-chela text-4xl'
+                        }
+                      >
+                        <PlusIcon className={'w-[26px] h-[26px] font-semibold'} />
+                      </button>
                     </div>
                   </div>
-                  <div className={'w-[140px] flex justify-center'}>
-                    <button
-                      className={'border-2 border-black rounded-lg px-4 bg-primary font-chela text-2xl'}
-                      onClick={() => {
-                        setShowTrade(!showTrade);
-                        setShow(false);
-                      }}
-                    >
-                      Trade
-                    </button>
-                  </div>
-                  <div className={'w-[100px] flex justify-center'}>
-                    <button
-                      onClick={() => {
-                        setShow(!show);
-                        setShowTrade(false);
-                      }}
-                      className={
-                        'border-2 border-black rounded-full w-[40px] h-[40px] flex items-center justify-center font-chela text-4xl'
-                      }
-                    >
-                      <PlusIcon className={'w-[26px] h-[26px] font-semibold'} />
-                    </button>
+                  <div className="px-10">
+                    <AddLiquidity show={show && index === i} battleId={battle.battle_info.battle} />
+                    <Trade show={showTrade && index === i} battleId={battle.battle_info.battle} />
                   </div>
                 </div>
               );
             })}
-
-            <div className="px-10">
-              <AddLiquidity show={show} />
-              <Trade show={showTrade} />
-            </div>
           </div>
         </div>
       </div>

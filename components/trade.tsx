@@ -10,6 +10,7 @@ import { LongCard } from '@/components/long-card';
 import { useEffect, useState } from 'react';
 import { LongPortfolio } from '@/components/long-portfolio';
 import { CloseLong } from '@/components/close-long';
+import { PYTH_FEED_IDS, UnderlyingType } from '@/constants/pyth';
 
 const renderer = ({
   days,
@@ -24,7 +25,7 @@ const renderer = ({
   seconds: number;
   completed: boolean;
 }) => {
-  if (completed) return <></>;
+  if (completed) return <>{seconds}</>;
   return (
     <div>
       {days}d {hours}h:{minutes}m
@@ -32,13 +33,12 @@ const renderer = ({
   );
 };
 
-export const Trade = ({ show }: { show: boolean }) => {
+export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) => {
   const { address } = useAccount();
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
-
-  const battle = battles?.[0];
+  const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
 
   const { data } = useReadContracts({
     contracts: [
@@ -65,14 +65,14 @@ export const Trade = ({ show }: { show: boolean }) => {
 
   const spearBalance = data?.[1]?.result ?? 0n;
   const shieldBalance = data?.[2]?.result ?? 0n;
-  console.log(spearBalance, shieldBalance);
+  const underlying = battle?.bk?.underlying ?? 'BTC';
 
   const { priceHistory } = usePriceStream(
-    'https://hermes.pyth.network/v2/updates/price/stream?ids[]=e62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43',
+    `https://hermes.pyth.network/v2/updates/price/stream?ids[]=${PYTH_FEED_IDS[underlying as UnderlyingType]}`,
+    underlying,
   );
 
   const owned = spearBalance > 0n || shieldBalance > 0n;
-  console.log(spearBalance, shieldBalance);
 
   const [mode, setMode] = useState(0); // 0 => long, 1 => portfolio, 2=> close long
 
@@ -127,7 +127,13 @@ export const Trade = ({ show }: { show: boolean }) => {
       <div className={'col-span-1 border-[3px] border-black p-6 bg-white rounded-xl'}>
         {mode === 0 && <LongCard setMode={setMode} owned={owned} />}
         {mode === 1 && (
-          <LongPortfolio setMode={setMode} callAmount={spearBalance} putAmount={shieldBalance} decimals={decimals} />
+          <LongPortfolio
+            battleId={battle?.battle_info?.battle}
+            setMode={setMode}
+            callAmount={spearBalance}
+            putAmount={shieldBalance}
+            decimals={decimals}
+          />
         )}
         {mode === 2 && (
           <CloseLong setMode={setMode} callAmount={spearBalance} putAmount={shieldBalance} decimals={decimals} />

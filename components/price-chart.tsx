@@ -16,9 +16,9 @@ export default function PriceChart({ data }: PriceChartProps) {
     }));
   }, [data]);
 
-  const minPrice = useMemo(() => Math.min(...chartData.map((d) => d.price)) * 0.99995, [chartData]);
+  const minPrice = useMemo(() => Math.min(...chartData.map((d) => d.price)) * 0.995, [chartData]);
 
-  const maxPrice = useMemo(() => Math.max(...chartData.map((d) => d.price)) * 1.00005, [chartData]);
+  const maxPrice = useMemo(() => Math.max(...chartData.map((d) => d.price)) * 1.005, [chartData]);
 
   const targetPrice = 93000;
 

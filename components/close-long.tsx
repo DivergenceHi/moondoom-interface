@@ -151,27 +151,28 @@ export const CloseLong = ({
           className={'bg-transparent outline-none appearance-none text-lg w-full'}
           value={formatUnits(BigInt(spent), decimals)}
           disabled
+          readOnly
         />
         <div className="flex ml-auto text-sm font-semibold">USDC</div>
       </div>
 
-      <button className={clsx('btn-md-primary')} disabled={!can || loading} onClick={onMarket}>
+      <button className={clsx('btn-md-primary mt-6')} disabled={!can || loading} onClick={onMarket}>
         {loading && <Loading />}
         Confirm
       </button>
 
-      <div className="flex justify-between mt-6">
-        <div>Avg. entry price</div>
-        <div>${formatBalance(price, 18, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div>Total cost</div>
-        <div>${formatBalance(spent, decimals, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>+${formatUnits(BigInt(get), decimals)}</div>
-      </div>
+      {/*<div className="flex justify-between mt-6">*/}
+      {/*  <div>Avg. entry price</div>*/}
+      {/*  <div>${formatBalance(price, 18, 4)}</div>*/}
+      {/*</div>*/}
+      {/*<div className="flex justify-between">*/}
+      {/*  <div>Total cost</div>*/}
+      {/*  <div>${formatBalance(spent, decimals, 4)}</div>*/}
+      {/*</div>*/}
+      {/*<div className="flex justify-between">*/}
+      {/*  <div className={'font-bold'}>Expected P/L</div>*/}
+      {/*  <div className={'text-primary'}>+${formatUnits(BigInt(get), decimals)}</div>*/}
+      {/*</div>*/}
     </div>
   );
 };
