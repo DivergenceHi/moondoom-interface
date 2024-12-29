@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Address, erc20Abi, formatUnits, parseEther, parseUnits } from 'viem';
+import { Address, erc20Abi, formatUnits, parseUnits } from 'viem';
 import { ArrowDownIcon, ArrowLeftIcon } from '@radix-ui/react-icons';
 import { formatBalance } from '@/lib/format';
 import { useAccount, useReadContracts, useWriteContract } from 'wagmi';
@@ -17,7 +17,6 @@ import { base } from 'viem/chains';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '@/app/providers';
 import { TradeMode } from '@/types/trade';
-import { WAD } from '@/constants';
 import { Loading } from '@/components/loading';
 
 export const CloseLong = ({
@@ -112,9 +111,6 @@ export const CloseLong = ({
     setLoading(false);
     setMode(1);
   };
-
-  console.log(amount, get);
-  const price = parseEther(amount) > 0n ? (spent * WAD) / parseUnits(amount, decimals) : 0n;
 
   const can = parseUnits(amount, decimals) > 0n;
 

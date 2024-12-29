@@ -1,4 +1,4 @@
-import { BattleResponseData, PriceData } from '@/types/battle';
+import { PriceData } from '@/types/battle';
 
 export function ellipseAddress(address: string | null | undefined, width = 6): string {
   if (!address) {

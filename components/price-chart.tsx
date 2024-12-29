@@ -20,8 +20,6 @@ export default function PriceChart({ data }: PriceChartProps) {
 
   const maxPrice = useMemo(() => Math.max(...chartData.map((d) => d.price)) * 1.005, [chartData]);
 
-  const targetPrice = 93000;
-
   return (
     <div className="w-full h-[400px] ">
       <ResponsiveContainer width="100%" height="100%">

@@ -54,8 +54,6 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   });
 
   const balance = data?.[0]?.result ?? 0n;
-  const spearBalance = data?.[1]?.result ?? 0n;
-  const shieldBalance = data?.[2]?.result ?? 0n;
 
   const tolerance = 10;
   const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_INPUT, decimals);
