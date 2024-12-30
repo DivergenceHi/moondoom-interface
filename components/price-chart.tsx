@@ -10,7 +10,6 @@ interface PriceChartProps {
 }
 
 export default function PriceChart({ data, targetPrice }: PriceChartProps) {
-  console.log(targetPrice);
   const chartData = useMemo(() => {
     return data.map((item) => ({
       time: new Date(item.timestamp).toLocaleTimeString(),
@@ -30,7 +29,7 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
         }
       >
         <div>Target Price</div>
-        <div>94000</div>
+        <div>{targetPrice}</div>
       </div>
       <div className={'bg-primary bg-opacity-50 h-[200px] absolute left-1 right-[65px]'} />
       <div

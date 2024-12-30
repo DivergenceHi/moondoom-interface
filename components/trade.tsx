@@ -39,6 +39,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
   const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
+  console.log(battle);
 
   const { data } = useReadContracts({
     contracts: [
@@ -96,7 +97,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
               {dayjs(expires).format('MMMM D, YYYY')}
             </div>
           </div>
-          <PriceChart data={priceHistory} />
+          <PriceChart data={priceHistory} targetPrice={'95300.87594119'} />
 
           {/*<div className={'h-[400px] relative'}>*/}
           {/*  <div className={'absolute top-[50px] left-[50px] flex items-center text-primary font-bold'}>*/}
