@@ -18,9 +18,11 @@ import { base } from 'viem/chains';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '@/app/providers';
 import { TradeMode } from '@/types/trade';
+import { Loading } from '@/components/loading';
 
 export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; owned: boolean }) => {
   const { address } = useAccount();
+  const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState('');
   const [isUp, setIsUp] = useState(false);
   const debounceAmount = useDebounce(amount, 1000);
@@ -30,7 +32,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
 
   const battle = battles?.[0];
 
-  const { data } = useReadContracts({
+  const { data, refetch } = useReadContracts({
     contracts: [
       {
         abi: erc20Abi,
@@ -40,20 +42,15 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
       },
       {
         abi: erc20Abi,
-        address: battle?.battle_info.spear,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: battle?.battle_info.shield,
-        functionName: 'balanceOf',
-        args: [address as Address],
+        address: currentCollateral?.address,
+        functionName: 'allowance',
+        args: [address as Address, POSITION_MANAGER_ADDRESS],
       },
     ],
   });
 
   const balance = data?.[0]?.result ?? 0n;
+  const allowance = data?.[1]?.result ?? 0n;
 
   const tolerance = 10;
   const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_INPUT, decimals);
@@ -61,6 +58,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   const { writeContractAsync } = useWriteContract();
 
   const onMarket = async () => {
+    setLoading(true);
     try {
       const min = new BigNumber(get.toString())
         .times(100 - tolerance)
@@ -93,11 +91,30 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
     } catch (e) {
       console.error(e);
     }
+    setLoading(false);
+  };
+
+  const onApprove = async () => {
+    setLoading(true);
+    try {
+      const hash = await writeContractAsync?.({
+        address: currentCollateral?.address as Address,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [POSITION_MANAGER_ADDRESS, parseUnits(amount, decimals)],
+      });
+      await waitForTransactionReceipt(config, { hash });
+      refetch?.();
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
   };
 
   const price = get > 0n ? (parseUnits(amount, decimals) * 10n ** 18n) / get : 0n;
 
   const can = parseUnits(amount, decimals) > 0n;
+  const needApprove = parseUnits(amount, decimals) > allowance;
 
   return (
     <div className={'relative'}>
@@ -156,21 +173,26 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
         <div className="ml-auto text-symbol">{}</div>
       </div>
 
-      <button className={clsx('btn-md-primary')} disabled={!can} onClick={onMarket}>
-        Confirm
+      <button
+        className={clsx('btn-md-primary mt-6')}
+        disabled={!can || loading}
+        onClick={needApprove ? onApprove : onMarket}
+      >
+        {loading && <Loading />}
+        {needApprove ? 'Approve' : 'Confirm'}
       </button>
 
       <div className="flex justify-between mt-6">
-        <div>Avg. entry price</div>
+        <div>Avg. Entry Price</div>
         <div>${formatBalance(price, 18, 2)}</div>
       </div>
       <div className="flex justify-between">
-        <div>Total cost</div>
+        <div>Total Cost</div>
         <div>${formatBalance(spent, decimals, 4)}</div>
       </div>
       <div className="flex justify-between">
         <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>+${formatUnits(BigInt(get), decimals)}</div>
+        <div className={'text-primary'}>+${formatBalance(get, decimals)}</div>
       </div>
     </div>
   );

@@ -1,11 +1,8 @@
 import { UpIcon } from '@/components/icons/up';
 import { DownIcon } from '@/components/icons/down';
 import { formatBalance } from '@/lib/format';
-import { WAD } from '@/constants';
-import { useQuery } from '@apollo/client';
-import { GET_USER_TRADES } from '@/graphql/trades';
-import { useAccount } from 'wagmi';
-import { parseUnits } from 'viem';
+import { Address } from 'viem';
+import { useLongPortfolioData } from '@/hooks/use-long-portfolio-data';
 
 export const LongPortfolio = ({
   battleId,
@@ -14,36 +11,18 @@ export const LongPortfolio = ({
   putAmount,
   decimals,
 }: {
-  battleId: string | undefined;
+  battleId: Address;
   setMode: (mode: number) => void;
   callAmount: bigint;
   putAmount: bigint;
   decimals: number;
 }) => {
-  const { address } = useAccount();
-  const isUp = callAmount > putAmount;
-  const netAmount = isUp ? callAmount - putAmount : putAmount - callAmount;
-
-  const { data } = useQuery(GET_USER_TRADES, {
-    variables: {
-      sender: address?.toLocaleLowerCase(),
-      battle: battleId?.toLocaleLowerCase(),
-    },
-  });
-
-  const trades = data?.trades;
-  const costAmount: bigint =
-    trades?.reduce((acc: bigint, trade: { amountIn: string }) => acc + parseUnits(trade.amountIn, decimals), 0n) ?? 0n;
-
-  const maxAmount = callAmount > putAmount ? callAmount : putAmount;
-  const isLoss = maxAmount < costAmount;
-  const plAmount = isLoss ? costAmount - maxAmount : maxAmount - costAmount;
-  const avgCost = netAmount > 0n ? WAD - (plAmount * WAD) / netAmount : 0n;
-
-  console.log('trades', trades, costAmount);
-
-  const payout = costAmount > 0n ? (maxAmount * 10000n) / costAmount - 10000n : 0n;
-  console.log(maxAmount, costAmount);
+  const { isUp, avgEntryPrice, netAmount, cost, payout, isLoss, plAmount } = useLongPortfolioData(
+    battleId,
+    decimals,
+    callAmount,
+    putAmount,
+  );
 
   return (
     <div>
@@ -67,12 +46,12 @@ export const LongPortfolio = ({
       </div>
 
       <div className="flex justify-between mt-20">
-        <div>Avg. entry cost</div>
-        <div>${formatBalance(avgCost, 18, 4)}</div>
+        <div>Avg. Entry Price</div>
+        <div>${formatBalance(avgEntryPrice, 18, 4)}</div>
       </div>
       <div className="flex justify-between">
-        <div>Total cost</div>
-        <div>${formatBalance(costAmount, decimals, 4)}</div>
+        <div>Total Cost</div>
+        <div>${formatBalance(cost, decimals, 4)}</div>
       </div>
       <div className="flex justify-between">
         <div className={'font-bold'}>Expected P/L</div>

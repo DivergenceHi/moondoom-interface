@@ -18,28 +18,31 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '@/app/providers';
 import { TradeMode } from '@/types/trade';
 import { Loading } from '@/components/loading';
+import { WAD } from '@/constants';
+import { useLongPortfolioData } from '@/hooks/use-long-portfolio-data';
 
 export const CloseLong = ({
+  battleId,
   setMode,
   callAmount,
   putAmount,
   decimals,
 }: {
+  battleId: Address;
   setMode: (mode: number) => void;
   callAmount: bigint;
   putAmount: bigint;
   decimals: number;
 }) => {
   const [loading, setLoading] = useState(false);
-  const isUp = callAmount < putAmount; // When close long, should reverse the logic
-  const netAmount = isUp ? putAmount - callAmount : callAmount - putAmount;
+
+  const { isUp, avgEntryPrice, netAmount } = useLongPortfolioData(battleId, decimals, callAmount, putAmount);
   const { address } = useAccount();
   const [amount, setAmount] = useState(formatBalance(netAmount, decimals, 18));
   const debounceAmount = useDebounce(amount, 1000);
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const { battles } = useBattles();
-
-  const battle = battles?.[0];
+  const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
 
   const { data } = useReadContracts({
     contracts: [
@@ -70,12 +73,13 @@ export const CloseLong = ({
   console.log(spearBalance, shieldBalance);
 
   const tolerance = 10;
-  const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_OUTPUT, decimals);
+  const { get, spent } = useQuote(debounceAmount, battleId, !isUp, TradeMode.EXACT_OUTPUT, decimals);
 
   const { writeContractAsync } = useWriteContract();
 
   const onMarket = async () => {
     setLoading(true);
+    if (!battle) return;
     try {
       const min = new BigNumber(get.toString())
         .times(100 - tolerance)
@@ -89,7 +93,7 @@ export const CloseLong = ({
           underlying: battle.bk.underlying,
           strikeValue: battle.bk.strikeValue,
         },
-        tradeType: isUp ? 0 : 1,
+        tradeType: !isUp ? 0 : 1,
         amountSpecified: spent,
         recipient: address as Address,
         amountOutMin: BigInt(min),
@@ -114,6 +118,10 @@ export const CloseLong = ({
 
   const can = parseUnits(amount, decimals) > 0n;
 
+  console.log(spent, get, debounceAmount, battleId, decimals);
+  const avgClosePrice = get > 0n ? WAD - (WAD * spent) / get : 0n;
+  const plAmount = (avgClosePrice - avgEntryPrice) * netAmount;
+
   return (
     <div className={'relative'}>
       <ArrowLeftIcon className={'absolute cursor-pointer'} width={26} height={26} onClick={() => setMode(1)} />
@@ -130,7 +138,7 @@ export const CloseLong = ({
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <div className="ml-auto font-semibold text-sm">{isUp ? 'UP' : 'DOWN'}</div>
+        <div className="ml-auto font-semibold text-sm">{!isUp ? 'UP' : 'DOWN'}</div>
       </div>
 
       <div className="flex justify-center mt-4">
@@ -157,18 +165,21 @@ export const CloseLong = ({
         Confirm
       </button>
 
-      {/*<div className="flex justify-between mt-6">*/}
-      {/*  <div>Avg. entry price</div>*/}
-      {/*  <div>${formatBalance(price, 18, 4)}</div>*/}
-      {/*</div>*/}
-      {/*<div className="flex justify-between">*/}
-      {/*  <div>Total cost</div>*/}
-      {/*  <div>${formatBalance(spent, decimals, 4)}</div>*/}
-      {/*</div>*/}
-      {/*<div className="flex justify-between">*/}
-      {/*  <div className={'font-bold'}>Expected P/L</div>*/}
-      {/*  <div className={'text-primary'}>+${formatUnits(BigInt(get), decimals)}</div>*/}
-      {/*</div>*/}
+      <div className="flex justify-between mt-6">
+        <div>Avg. Close Price</div>
+        <div>${formatBalance(avgClosePrice, 18, 4)}</div>
+      </div>
+      <div className="flex justify-between">
+        <div>Prior Entry Price</div>
+        <div>${formatBalance(avgEntryPrice, 18, 4)}</div>
+      </div>
+      <div className="flex justify-between">
+        <div className={'font-bold'}>Expected P/L</div>
+        <div className={'text-primary'}>
+          +$({formatBalance(avgClosePrice, 18, 2)} - {formatBalance(avgEntryPrice, 18, 2)})*
+          {formatBalance(netAmount, decimals, 2)} = ${formatBalance(plAmount, 18 + decimals)}
+        </div>
+      </div>
     </div>
   );
 };

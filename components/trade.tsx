@@ -128,7 +128,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
         {mode === 0 && <LongCard setMode={setMode} owned={owned} />}
         {mode === 1 && (
           <LongPortfolio
-            battleId={battle?.battle_info?.battle}
+            battleId={battle?.battle_info?.battle as Address}
             setMode={setMode}
             callAmount={spearBalance}
             putAmount={shieldBalance}
@@ -136,7 +136,13 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
           />
         )}
         {mode === 2 && (
-          <CloseLong setMode={setMode} callAmount={spearBalance} putAmount={shieldBalance} decimals={decimals} />
+          <CloseLong
+            battleId={battle?.battle_info?.battle as Address}
+            setMode={setMode}
+            callAmount={spearBalance}
+            putAmount={shieldBalance}
+            decimals={decimals}
+          />
         )}
       </div>
     </div>
