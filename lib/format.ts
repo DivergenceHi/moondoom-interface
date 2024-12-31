@@ -42,6 +42,15 @@ export const toBigInt = (value: string | number, decimals: number = 18): bigint 
   }
 };
 
+export const formatUSD = (value: string | number): string => {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const isNegative = num < 0;
+  const absNum = Math.abs(num);
+  const formatted = absNum.toFixed(2);
+
+  return isNegative ? `-$${formatted}` : `$${formatted}`;
+};
+
 // const balance = 123456789n;
 // console.log(formatBalance(balance, 6));  // "123.456789"
 // console.log(formatBalanceWithCommas(balance, 6));  // "123.456789"

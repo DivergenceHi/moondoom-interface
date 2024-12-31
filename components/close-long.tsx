@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Address, erc20Abi, formatUnits, parseUnits } from 'viem';
 import { ArrowDownIcon, ArrowLeftIcon } from '@radix-ui/react-icons';
-import { formatBalance } from '@/lib/format';
+import { formatBalance, formatUSD } from '@/lib/format';
 import { useAccount, useReadContracts, useWriteContract } from 'wagmi';
 import { useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -171,11 +171,11 @@ export const CloseLong = ({
       </div>
       <div className="flex justify-between">
         <div>Prior Entry Price</div>
-        <div>${formatBalance(avgEntryPrice, 18, 4)}</div>
+        <div>{formatUSD(formatBalance(avgEntryPrice, 18, 4))}</div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>
+        <div className={'text-primary text-xs'}>
           +$({formatBalance(avgClosePrice, 18, 2)} - {formatBalance(avgEntryPrice, 18, 2)})*
           {formatBalance(netAmount, decimals, 2)} = ${formatBalance(plAmount, 18 + decimals)}
         </div>

@@ -1,6 +1,6 @@
 import { UpIcon } from '@/components/icons/up';
 import { DownIcon } from '@/components/icons/down';
-import { formatBalance } from '@/lib/format';
+import { formatBalance, formatUSD } from '@/lib/format';
 import { Address } from 'viem';
 import { useLongPortfolioData } from '@/hooks/use-long-portfolio-data';
 
@@ -40,14 +40,14 @@ export const LongPortfolio = ({
         <div>Long {formatBalance(putAmount, decimals, 4)} DOWN</div>
       </div>
 
-      <div className={'my-16'}>
+      <div className={'my-12'}>
         <div className={'text-3xl font-semibold font-roboto text-center'}>Expected Payout</div>
         <div className={'text-primary text-center text-8xl -mt-4 font-chela text-md-border'}>+{payout / 100n}%</div>
       </div>
 
       <div className="flex justify-between mt-20">
         <div>Avg. Entry Price</div>
-        <div>${formatBalance(avgEntryPrice, 18, 4)}</div>
+        <div>{formatUSD(formatBalance(avgEntryPrice, 18, 4))}</div>
       </div>
       <div className="flex justify-between">
         <div>Total Cost</div>
