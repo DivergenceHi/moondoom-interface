@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { LongPortfolio } from '@/components/long-portfolio';
 import { CloseLong } from '@/components/close-long';
 import { PYTH_FEED_IDS, UnderlyingType } from '@/constants/pyth';
+import { formatBalance } from '@/lib/format';
 
 const renderer = ({
   days,
@@ -39,7 +40,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
   const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
-  console.log(battle);
+  const strikeValue = battle?.bk?.strikeValue ?? 0n;
 
   const { data } = useReadContracts({
     contracts: [
@@ -97,7 +98,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
               {dayjs(expires).format('MMMM D, YYYY')}
             </div>
           </div>
-          <PriceChart data={priceHistory} targetPrice={'95300.87594119'} />
+          <PriceChart data={priceHistory} targetPrice={formatBalance(strikeValue, 18, 2)} />
         </div>
 
         <div className="bg-white px-12 py-8 border-[3px] border-black rounded-2xl text-center">

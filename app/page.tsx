@@ -3,7 +3,7 @@ import { Header } from '@/components/header';
 import Image from 'next/image';
 import { GainChart } from '@/components/gain-chart';
 import { PlusIcon } from '@radix-ui/react-icons';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Trade } from '@/components/trade';
 import { useBattles } from '@/hooks/useBattles';
 import clsx from 'clsx';
@@ -26,8 +26,14 @@ export default function Home() {
   const [index, setIndex] = useState(-1);
   const [showTrade, setShowTrade] = useState(false);
   const { battles, isLoading } = useBattles();
-  const [category, setCategory] = useState('doomer');
+  const [category, setCategory] = useState('mooner');
   const filterBattles = battles?.filter((battle) => battle.category === category);
+
+  useEffect(() => {
+    if (battles && battles.length > 0) {
+      setCategory(battles[0].category);
+    }
+  }, [battles]);
 
   if (showAdd) {
     return (

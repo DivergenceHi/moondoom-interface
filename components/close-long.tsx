@@ -87,12 +87,7 @@ export const CloseLong = ({
         .toFixed(0, BigNumber.ROUND_UP);
 
       const args = {
-        battleKey: {
-          expiries: battle.bk.expiries,
-          collateral: battle.bk.collateral,
-          underlying: battle.bk.underlying,
-          strikeValue: battle.bk.strikeValue,
-        },
+        battleKey: battle.bk,
         tradeType: !isUp ? 0 : 1,
         amountSpecified: spent,
         recipient: address as Address,
