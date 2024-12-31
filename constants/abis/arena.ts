@@ -749,4 +749,4 @@ export const ArenaAbi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;

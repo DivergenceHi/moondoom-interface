@@ -10,6 +10,7 @@ import { POSITION_MANAGER_ADDRESS } from '@/constants/contracts';
 import { PositionManagerAbi } from '@/constants/abis/position-manager';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '@/app/providers';
+import { ExpectedPayout } from '@/components/expected-payout';
 
 export const CloseShort = ({ position, refetch }: { position: ShortPosition; refetch: () => void }) => {
   const { address } = useAccount();
@@ -122,9 +123,8 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
 
   return (
     <div className={'relative'}>
-      <div className={'font-chela text-4xl text-center pt-4'}>Close Short</div>
-      <div className={'text-center'}>Expected Payout</div>
-      <div className={'font-chela text-primary text-md-border text-4xl drop-shadow-md text-center -mt-3'}>+154%</div>
+      <div className={'font-chela text-4xl text-center pt-4 mb-6'}>Close Short</div>
+      <ExpectedPayout payout={154} />
 
       <div className={'mt-4 flex justify-between'}>
         Burn

@@ -13,6 +13,7 @@ export function ellipseAddress(address: string | null | undefined, width = 6): s
 }
 
 export const calculatePriceChange = (oldPrice: string, newPrice: string) => {
+  if (!oldPrice || !newPrice) return { change: '0.00', isPositive: false, isNegative: false, formatted: '0.00%' };
   const oldValue = Number(oldPrice);
   const newValue = Number(newPrice);
 
@@ -33,6 +34,7 @@ const normalizeValue = (value: number, minValue: number, maxValue: number): numb
 };
 
 export const calculateSevenDayChanges = (priceHistory: PriceData[], currentPrice: string) => {
+  if (!priceHistory) return undefined;
   const changes = priceHistory.map((day) => {
     const priceChange = calculatePriceChange(day.price, currentPrice);
 

@@ -22,7 +22,7 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
   const maxPrice = useMemo(() => Math.max(...chartData.map((d) => d.price)) * 1.005, [chartData]);
 
   return (
-    <div className="w-full h-[400px] relative">
+    <div className="w-full h-[300px] relative">
       <div
         className={
           'absolute right-[65px] bg-[#FF626E] z-50 top-[185px] text-sm w-[300px] flex items-center justify-between px-4 py-1 font-roboto text-white font-semibold'
@@ -31,10 +31,10 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
         <div>Target Price</div>
         <div>{targetPrice}</div>
       </div>
-      <div className={'bg-primary bg-opacity-50 h-[200px] absolute left-1 right-[65px]'} />
+      <div className={'bg-primary bg-opacity-50 h-[100px] absolute left-1 right-[65px]'} />
       <div
         className={
-          'bg-danger bg-opacity-20 h-[165px] absolute left-1 right-[65px] top-[200px] border-t-4 border-t-danger'
+          'bg-danger bg-opacity-20 h-[165px] absolute left-1 right-[65px] top-[100px] border-t-4 border-t-danger'
         }
       />
       <ResponsiveContainer width="100%" height="100%">

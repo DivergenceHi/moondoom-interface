@@ -19,6 +19,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '@/app/providers';
 import { TradeMode } from '@/types/trade';
 import { Loading } from '@/components/loading';
+import { ExpectedPayout } from '@/components/expected-payout';
 
 export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; owned: boolean }) => {
   const { address } = useAccount();
@@ -121,7 +122,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
       {owned && (
         <ArrowLeftIcon className={'absolute cursor-pointer'} width={26} height={26} onClick={() => setMode(1)} />
       )}
-      <div className={'flex pt-6'}>
+      <div className={'flex'}>
         <div
           onClick={() => setIsUp(true)}
           className={clsx('cursor-pointer grayscale', {
@@ -139,10 +140,9 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
           <Image src={'/down.png'} alt={'up'} width={186} height={125} />
         </div>
       </div>
-      <div className={'text-center'}>Expected Payout</div>
-      <div className={'font-chela text-primary text-4xl drop-shadow-md text-center -mt-3'}>+154%</div>
+      <ExpectedPayout payout={120} />
 
-      <div className={'mt-4 flex justify-between'}>
+      <div className={'mt-2 flex justify-between'}>
         Pay
         <div>Balance: {formatUnits(balance, decimals)}</div>
       </div>
@@ -157,10 +157,10 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
         <div className="ml-auto text-symbol">USDC</div>
       </div>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-2">
         <ArrowDownIcon className={'font-bold w-[28px] h-[28px]'} />
       </div>
-      <div className={'flex justify-between'}>Long</div>
+      <div className={'flex justify-between -mt-4'}>Long</div>
       <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
         <input
           type="text"
@@ -170,11 +170,11 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
           disabled
           readOnly
         />
-        <div className="ml-auto text-symbol">{}</div>
+        <div className="ml-auto text-symbol">{isUp ? 'UP' : 'DOWN'}</div>
       </div>
 
       <button
-        className={clsx('btn-md-primary mt-6')}
+        className={clsx('btn-md-primary mt-4')}
         disabled={!can || loading}
         onClick={needApprove ? onApprove : onMarket}
       >

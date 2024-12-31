@@ -3,7 +3,7 @@ import { Header } from '@/components/header';
 import Image from 'next/image';
 import { GainChart } from '@/components/gain-chart';
 import { PlusIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Trade } from '@/components/trade';
 import { useBattles } from '@/hooks/useBattles';
 import clsx from 'clsx';
@@ -11,19 +11,42 @@ import { calculatePriceChange, calculateSevenDayChanges, ellipseAddress } from '
 import { getPriceFromSqrtPriceX96 } from '@divergence-protocol/diver-sdk';
 import { BigNumber } from 'bignumber.js';
 import { AddLiquidity } from '@/components/add-liquidity';
+import { CloseIcon } from '@/components/icons/close';
+import { AddNewCoin } from '@/components/add-new-coin';
+
+export interface SelectItemProps {
+  children?: ReactNode;
+  className?: string;
+  value: string;
+}
 
 export default function Home() {
   const [show, setShow] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
   const [index, setIndex] = useState(-1);
   const [showTrade, setShowTrade] = useState(false);
   const { battles, isLoading } = useBattles();
   const [category, setCategory] = useState('doomer');
   const filterBattles = battles?.filter((battle) => battle.category === category);
 
+  if (showAdd) {
+    return (
+      <div className="bg-gradient-to-r from-[rgb(10,27,40)] to-[rgb(25,63,61)] pb-20 min-h-screen">
+        <Header />
+        <div className={'mx-auto w-[1080px] max-w-full'}>
+          <div className={'bg-[#EBFFFB] rounded-2xl border-2 border-black px-8 pt-2 pb-8 mt-6 relative font-roboto'}>
+            <CloseIcon className={'absolute right-4 top-4 cursor-pointer'} onClick={() => setShowAdd(false)} />
+            <AddNewCoin />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gradient-to-r from-[rgb(10,27,40)] to-[rgb(25,63,61)] pb-20 min-h-screen">
       <Header />
-      <div className={'container mx-auto lg:px-32'}>
+      <div className={'mx-auto w-[1080px] max-w-full'}>
         <div className={'font-dela text-white text-2xl text-center mt-4 mb-8'}>
           Which Coin will Go <span className={'text-primary'}>Up</span>?
         </div>
@@ -58,7 +81,12 @@ export default function Home() {
             Trending
           </div>
 
-          <div className={'border-2 rounded-md border-primary px-2 flex items-center ml-auto'}>Add a New Coin</div>
+          <div
+            className={'border-2 rounded-md border-primary px-2 flex items-center ml-auto cursor-pointer'}
+            onClick={() => setShowAdd(true)}
+          >
+            Add a New Coin
+          </div>
         </div>
         <div className="overflow-x-scroll">
           <div className={'min-w-[800px]'}>
@@ -116,7 +144,7 @@ export default function Home() {
 
                     <div className="w-[200px] flex flex-col justify-center">
                       <div className="flex items-end gap-[1px]">
-                        {past7DaysPriceChanges.map((price, i) => (
+                        {past7DaysPriceChanges?.map((price, i) => (
                           <GainChart
                             key={i}
                             isGain={true}
@@ -126,7 +154,7 @@ export default function Home() {
                       </div>
                       <div className={'bg-black h-[4px] w-[104px] my-[2px]'}></div>
                       <div className="flex items-start gap-[1px]">
-                        {past7DaysPriceChanges.map((price, i) => (
+                        {past7DaysPriceChanges?.map((price, i) => (
                           <GainChart
                             key={i}
                             isGain={false}
@@ -204,7 +232,7 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
-                  <div className="px-10">
+                  <div className="px-8">
                     <AddLiquidity show={show && index === i} battleId={battle.battle_info.battle} />
                     <Trade show={showTrade && index === i} battleId={battle.battle_info.battle} />
                   </div>

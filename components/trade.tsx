@@ -88,7 +88,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
       className={`grid grid-cols-3 gap-6 bg-cyan border-4 border-black p-6 rounded-b-lg -mt-[2px] w-full font-roboto ${show ? '' : 'hidden'}`}
     >
       <div className={'col-span-2'}>
-        <div className={'p-6 pb-12 border-[3px] border-black rounded-2xl bg-white mb-6'}>
+        <div className={'px-4 py-6 border-[3px] border-black rounded-2xl bg-white mb-6'}>
           <div className="flex mb-6">
             <div className={'border-2 border-primary rounded-l-lg px-4 py-1 font-chela bg-black text-white text-2xl'}>
               {expires > 0 && <Countdown date={expires} renderer={renderer} />}
@@ -98,24 +98,6 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
             </div>
           </div>
           <PriceChart data={priceHistory} targetPrice={'95300.87594119'} />
-
-          {/*<div className={'h-[400px] relative'}>*/}
-          {/*  <div className={'absolute top-[50px] left-[50px] flex items-center text-primary font-bold'}>*/}
-          {/*    <ThickArrowUpIcon className={'text-primary w-[40px] h-[60px] '} />*/}
-          {/*    Up wins*/}
-          {/*  </div>*/}
-          {/*  <div className={'absolute top-[100px] left-[160px] flex items-center text-danger font-bold'}>*/}
-          {/*    <ThickArrowDownIcon className={'text-danger w-[40px] h-[60px] '} />*/}
-          {/*    Down wins*/}
-          {/*  </div>*/}
-          {/*  <div className={'absolute bg-primary bg-opacity-20 h-[100px] w-full'}></div>*/}
-          {/*  <div className={'absolute bg-danger bg-opacity-20 h-[300px] w-full bottom-0'}></div>*/}
-          {/*  <div className={'bg-danger text-white flex justify-between absolute right-0 w-[260px] top-[86px] px-4'}>*/}
-          {/*    Target Price*/}
-          {/*    <div>(+2.0%)</div>*/}
-          {/*    <div>97860.0</div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
         </div>
 
         <div className="bg-white px-12 py-8 border-[3px] border-black rounded-2xl text-center">
