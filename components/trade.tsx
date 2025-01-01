@@ -13,6 +13,7 @@ import { CloseLong } from '@/components/close-long';
 import { PYTH_FEED_IDS, UnderlyingType } from '@/constants/pyth';
 import { formatBalance } from '@/lib/format';
 import { ClockIcon } from '@radix-ui/react-icons';
+import { useBalances } from '@/hooks/use-balances';
 
 const renderer = ({
   days,
@@ -45,35 +46,13 @@ const renderer = ({
 };
 
 export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) => {
-  const { address } = useAccount();
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
   const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
   const strikeValue = battle?.bk?.strikeValue ?? 0n;
 
-  const { data } = useReadContracts({
-    contracts: [
-      {
-        abi: erc20Abi,
-        address: currentCollateral?.address,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: battle?.battle_info.spear,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: battle?.battle_info.shield,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-    ],
-  });
+  const { data } = useBalances(battle);
 
   const spearBalance = data?.[1]?.result ?? 0n;
   const shieldBalance = data?.[2]?.result ?? 0n;

@@ -21,6 +21,8 @@ import { Loading } from '@/components/loading';
 import { WAD } from '@/constants';
 import { useLongPortfolioData } from '@/hooks/use-long-portfolio-data';
 import { ExpectedPayout } from '@/components/expected-payout';
+import { useBalances } from '@/hooks/use-balances';
+import { useApprove } from '@/hooks/use-approve';
 
 export const CloseLong = ({
   battleId,
@@ -40,41 +42,19 @@ export const CloseLong = ({
   const { isUp, avgEntryPrice, netAmount } = useLongPortfolioData(battleId, decimals, callAmount, putAmount);
   const { address } = useAccount();
   const longAmount = formatBalance(netAmount, decimals, 18);
-  const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const { battles } = useBattles();
   const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
 
-  const { data } = useReadContracts({
-    contracts: [
-      {
-        abi: erc20Abi,
-        address: currentCollateral?.address,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: battle?.battle_info.spear,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: battle?.battle_info.shield,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-    ],
-  });
-
+  const { data, refetch } = useBalances(battle);
   const balance = data?.[0]?.result ?? 0n;
-  const spearBalance = data?.[1]?.result ?? 0n;
-  const shieldBalance = data?.[2]?.result ?? 0n;
-  console.log(spearBalance, shieldBalance);
+  const allowance = data?.[3]?.result ?? 0n;
+
+  const { get, spent } = useQuote(longAmount, battleId, !isUp, TradeMode.EXACT_OUTPUT, decimals);
 
   const tolerance = 10;
-  const { get, spent } = useQuote(longAmount, battleId, !isUp, TradeMode.EXACT_OUTPUT, decimals);
   const { writeContractAsync } = useWriteContract();
+
+  const { approve, approving } = useApprove(battle?.bk?.collateral, POSITION_MANAGER_ADDRESS, spent, refetch);
 
   const onMarket = async () => {
     setLoading(true);
@@ -103,16 +83,17 @@ export const CloseLong = ({
         account: address,
       });
       await waitForTransactionReceipt(config, { hash });
+      setMode(1);
     } catch (e) {
       console.error(e);
     }
     setLoading(false);
-    setMode(1);
   };
 
-  const can = parseUnits(longAmount, decimals) > 0n;
   const avgClosePrice = get > 0n ? WAD - (WAD * spent) / get : 0n;
   const plAmount = (avgClosePrice - avgEntryPrice) * netAmount;
+  const can = parseUnits(longAmount, decimals) > 0n && get > 0n;
+  const needApprove = spent > allowance;
 
   return (
     <div className={'relative'}>
@@ -138,9 +119,13 @@ export const CloseLong = ({
         <div className="flex ml-auto text-sm font-semibold">USDC</div>
       </div>
 
-      <button className={clsx('btn-md-primary mt-4')} disabled={!can || loading} onClick={onMarket}>
-        {loading && <Loading />}
-        Confirm
+      <button
+        className={clsx('btn-md-primary mt-4')}
+        disabled={!can || loading || approving}
+        onClick={needApprove ? approve : onMarket}
+      >
+        {(loading || approving) && <Loading />}
+        {needApprove ? 'Approve' : 'Confirm'}
       </button>
 
       <div className={'mt-6 text-sm'}>

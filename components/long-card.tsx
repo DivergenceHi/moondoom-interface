@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import Image from 'next/image';
-import { Address, erc20Abi, formatUnits, parseUnits } from 'viem';
+import { Address, formatUnits, parseUnits } from 'viem';
 import { ArrowDownIcon, ArrowLeftIcon } from '@radix-ui/react-icons';
 import { formatBalance } from '@/lib/format';
-import { useAccount, useReadContracts, useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { COLLATERALS } from '@/constants/collaterals';
@@ -20,6 +20,8 @@ import { config } from '@/app/providers';
 import { TradeMode } from '@/types/trade';
 import { Loading } from '@/components/loading';
 import { ExpectedPayout } from '@/components/expected-payout';
+import { useBalances } from '@/hooks/use-balances';
+import { useApprove } from '@/hooks/use-approve';
 
 export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; owned: boolean }) => {
   const { address } = useAccount();
@@ -32,26 +34,10 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   const { battles } = useBattles();
 
   const battle = battles?.[0];
-
-  const { data, refetch } = useReadContracts({
-    contracts: [
-      {
-        abi: erc20Abi,
-        address: currentCollateral?.address,
-        functionName: 'balanceOf',
-        args: [address as Address],
-      },
-      {
-        abi: erc20Abi,
-        address: currentCollateral?.address,
-        functionName: 'allowance',
-        args: [address as Address, POSITION_MANAGER_ADDRESS],
-      },
-    ],
-  });
+  const { data, refetch } = useBalances(battle);
 
   const balance = data?.[0]?.result ?? 0n;
-  const allowance = data?.[1]?.result ?? 0n;
+  const allowance = data?.[3]?.result ?? 0n;
 
   const tolerance = 10;
   const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_INPUT, decimals);
@@ -67,12 +53,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
         .toFixed(0, BigNumber.ROUND_UP);
 
       const args = {
-        battleKey: {
-          expiries: battle.bk.expiries,
-          collateral: battle.bk.collateral,
-          underlying: battle.bk.underlying,
-          strikeValue: battle.bk.strikeValue,
-        },
+        battleKey: battle.bk,
         tradeType: isUp ? 0 : 1,
         amountSpecified: parseUnits(amount, decimals),
         recipient: address as Address,
@@ -95,27 +76,17 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
     setLoading(false);
   };
 
-  const onApprove = async () => {
-    setLoading(true);
-    try {
-      const hash = await writeContractAsync?.({
-        address: currentCollateral?.address as Address,
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [POSITION_MANAGER_ADDRESS, parseUnits(amount, decimals)],
-      });
-      await waitForTransactionReceipt(config, { hash });
-      refetch?.();
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
-  };
+  const { approve, approving } = useApprove(
+    currentCollateral?.address,
+    POSITION_MANAGER_ADDRESS,
+    parseUnits(amount, decimals),
+    refetch,
+  );
 
   const price = get > 0n ? (spent * 10n ** 18n) / get : 0n;
   const plAmount = get - spent;
 
-  const can = parseUnits(amount, decimals) > 0n;
+  const can = parseUnits(amount, decimals) > 0n && get > 0n;
   const needApprove = parseUnits(amount, decimals) > allowance;
   const payout = spent > 0n && get > 0n ? (get * 10000n) / spent - 10000n : 0n;
 
@@ -169,10 +140,10 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
 
       <button
         className={clsx('btn-md-primary mt-4')}
-        disabled={!can || loading}
-        onClick={needApprove ? onApprove : onMarket}
+        disabled={!can || loading || approving}
+        onClick={needApprove ? approve : onMarket}
       >
-        {loading && <Loading />}
+        {(loading || approving) && <Loading />}
         {needApprove ? 'Approve' : 'Confirm'}
       </button>
 

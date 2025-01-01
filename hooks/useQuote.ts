@@ -41,6 +41,7 @@ export const useQuote = (amount: string, battleId: Address, isSpear: boolean, ty
         setIndex(index + 1);
       } else {
         setGet(0n);
+        setSpent(0n);
       }
       setLoading(false);
     };
