@@ -95,3 +95,35 @@ body {
 .drop-md-shadow {
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.5));
 }
+
+.DialogOverlay {
+  @apply fixed inset-0 bg-black bg-opacity-40;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.DialogContent {
+  @apply bg-cyan rounded-xl border-2 border-black drop-shadow-md fixed top-1/2 left-1/2 px-8 py-6 w-[570px] max-w-full;
+  transform: translate(-50%, -50%);
+  max-height: 85vh;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
