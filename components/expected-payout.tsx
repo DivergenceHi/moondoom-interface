@@ -10,7 +10,7 @@ export const ExpectedPayout = ({ payout }: { payout: bigint }) => {
         {payout <= 0n && <>--%</>}
         {payout > 0n && <>+{formatBalance(payout, 2, 2)}%</>}
       </div>
-      <div className="flex items-center gap-2 mt-4 text-xs">
+      <div className="flex items-start gap-2 mt-4 text-xs">
         <RiskIcon />
         No Liquidation Risks
       </div>

@@ -29,8 +29,8 @@ export const AddLiquidity = ({ show, battleId }: { show: boolean; battleId: stri
   }
 
   return (
-    <div className={`grid grid-cols-2 gap-1 -mt-[2px] w-full font-roboto ${show ? '' : 'hidden'}`}>
-      <div className={'bg-cyan px-8 pt-4 pb-12 border-2 border-black rounded-b-2xl'}>
+    <div className={`grid grid-cols-2 gap-1 -mt-[2px] w-full drop-md-shadow font-roboto ${show ? '' : 'hidden'}`}>
+      <div className={'bg-cyan px-12 pt-4 pb-12 border-2 border-black rounded-b-2xl'}>
         <div className={'mb-8 flex items-center'}>
           {positions?.map((position, i: number) => (
             <div
@@ -63,7 +63,7 @@ export const AddLiquidity = ({ show, battleId }: { show: boolean; battleId: stri
         )}
         {index === addIndex && <ShortCard battle={battle} refetch={refetch} setIndex={setIndex} />}
       </div>
-      <div className={'bg-cyan px-8 py-4 border-2 border-black rounded-b-2xl font-roboto'}>
+      <div className={'bg-cyan px-12 py-4 border-2 border-black rounded-b-2xl font-roboto'}>
         {index === addIndex && <AddLiquidityGuide />}
         {index < addIndex && positions && battle && (
           <CloseShort position={{ battle, ...positions[index - 1] }} refetch={refetch} />

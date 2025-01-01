@@ -14,7 +14,7 @@ import { ExpectedPayout } from '@/components/expected-payout';
 
 export const CloseShort = ({ position, refetch }: { position: ShortPosition; refetch: () => void }) => {
   const { address } = useAccount();
-  const [finalizeloading, setFinalizeLoading] = useState(false);
+  const [finalizeLoading, setFinalizeLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const battle = position.battle;
@@ -27,6 +27,7 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
   const callAmount = position?.owed?.spearOut;
   const putAmount = position?.owed?.shieldOut;
   const isUp = callAmount > putAmount;
+  const maxAmount = isUp ? callAmount : putAmount;
 
   const { data, refetch: refetchBalance } = useReadContracts({
     contracts: [
@@ -64,7 +65,10 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
   const balance = isUp ? spearBalance : shieldBalance;
 
   const burnAmount = isUp ? callAmount : putAmount;
-
+  const finalized = position?.state > PositionState.LiquidityAdded;
+  const receiveAmount = finalized
+    ? burnAmount
+    : position?.seed + position?.owed?.collateralIn + position?.owed?.fee - maxAmount;
   const { writeContractAsync } = useWriteContract();
 
   const onFinalize = async () => {
@@ -123,44 +127,38 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
 
   return (
     <div className={'relative'}>
-      <div className={'font-chela text-4xl text-center pt-4 mb-6'}>Close Short</div>
-      <ExpectedPayout payout={154} />
+      <div className={'font-chela text-4xl text-center pt-4 mb-4'}>Close Short</div>
+      <ExpectedPayout payout={154n} />
 
       <div className={'mt-4 flex justify-between'}>
         Burn
-        <div>Balance: {formatBalance(balance, decimals, decimals)}</div>
+        {finalized && <div>Balance: {formatBalance(balance, decimals, decimals)}</div>}
       </div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl mb-6'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={formatBalance(burnAmount, decimals, decimals)}
-          readOnly
-        />
-        <div className="ml-auto font-semibold text-sm">{isUp ? 'UP' : 'DOWN'}</div>
-      </div>
+      {finalized ? (
+        <div className={'input-md-wrapper'}>
+          <input type="text" placeholder={'0.0'} value={formatBalance(burnAmount, decimals, decimals)} readOnly />
+          <div className="ml-auto font-semibold text-sm">{isUp ? 'UP' : 'DOWN'}</div>
+        </div>
+      ) : (
+        <div className={'input-md-wrapper'}>
+          <input type="text" placeholder={'0.0'} value={'1'} readOnly />
+          <div className="ml-auto font-semibold text-sm">LP</div>
+        </div>
+      )}
 
-      <div className={'flex justify-between items-center'}>Receive</div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={formatBalance(burnAmount, decimals, decimals)}
-          disabled
-          readOnly
-        />
+      <div className={'flex justify-between items-center mt-2'}>Receive</div>
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={formatBalance(receiveAmount, decimals, decimals)} readOnly />
         <div className="flex ml-auto text-sm font-semibold">USDC</div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-6">
         <button
           className={clsx('btn-md-primary')}
-          disabled={finalizeloading || position?.state > PositionState.LiquidityAdded}
+          disabled={finalizeLoading || position?.state > PositionState.LiquidityAdded}
           onClick={onFinalize}
         >
-          {finalizeloading && <Loading />}
+          {finalizeLoading && <Loading />}
           Finalize
         </button>
         <button
@@ -173,17 +171,19 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
         </button>
       </div>
 
-      <div className="flex justify-between mt-6">
-        <div>Avg. entry price</div>
-        <div>${formatBalance(0n, 18, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div>Total cost</div>
-        <div>${formatBalance(0n, decimals, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>+${formatUnits(BigInt(0n), decimals)}</div>
+      <div className="mt-4 text-sm">
+        <div className="flex justify-between mt-6">
+          <div>Avg. entry price</div>
+          <div>${formatBalance(0n, 18, 4)}</div>
+        </div>
+        <div className="flex justify-between">
+          <div>Total cost</div>
+          <div>${formatBalance(0n, decimals, 4)}</div>
+        </div>
+        <div className="flex justify-between font-bold">
+          <div className={'font-bold'}>Expected P/L</div>
+          <div className={'text-dark-primary'}>+${formatUnits(BigInt(0n), decimals)}</div>
+        </div>
       </div>
     </div>
   );

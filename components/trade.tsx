@@ -96,7 +96,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
 
   return (
     <div
-      className={`grid grid-cols-3 gap-6 bg-cyan border-4 border-black p-6 rounded-b-lg -mt-[2px] w-full font-roboto ${show ? '' : 'hidden'}`}
+      className={`grid grid-cols-3 gap-6 bg-cyan border-4 border-black p-6 rounded-b-xl drop-md-shadow -mt-[2px] w-full font-roboto ${show ? '' : 'hidden'}`}
     >
       <div className={'col-span-2'}>
         <div className={'px-4 py-6 border-[3px] border-black rounded-2xl bg-white mb-6'}>

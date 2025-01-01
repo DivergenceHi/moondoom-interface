@@ -148,7 +148,7 @@ export const ShortCard = ({
     <div className={''}>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 0,
+          'bg-md-gradient-primary active': mode === 0,
         })}
         onClick={() => setMode(0)}
       >
@@ -157,7 +157,7 @@ export const ShortCard = ({
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 1,
+          'bg-md-gradient-primary active': mode === 1,
         })}
         onClick={() => setMode(1)}
       >
@@ -166,7 +166,7 @@ export const ShortCard = ({
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 2,
+          'bg-md-gradient-primary active': mode === 2,
         })}
         onClick={() => setMode(2)}
       >
@@ -178,32 +178,19 @@ export const ShortCard = ({
         Deposit
         <div>Balance: {formatBalance(balance, decimals)}</div>
       </div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={amount} onChange={(e) => setAmount(e.target.value)} />
         <div className="text-symbol ml-auto">USDC</div>
       </div>
 
-      <div className={'mt-4'}>Short</div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={formatBalance(canGet, decimals, decimals)}
-          disabled
-          readOnly
-        />
+      <div className={'mt-2'}>Short</div>
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={formatBalance(canGet, decimals, decimals)} disabled readOnly />
         <div className="text-symbol ml-auto">PUT</div>
       </div>
 
       <button
-        className={'btn-md-primary mt-6'}
+        className={'btn-md-primary drop-md-shadow mt-6'}
         onClick={needApprove ? onApprove : confirm}
         disabled={!can || mode === -1 || loading}
       >

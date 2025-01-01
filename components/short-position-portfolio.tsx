@@ -5,6 +5,7 @@ import { COLLATERALS } from '@/constants/collaterals';
 import { formatBalance } from '@/lib/format';
 import { UpIcon } from '@/components/icons/up';
 import { DownIcon } from '@/components/icons/down';
+import { VersusBar } from '@/components/versus-bar';
 
 export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }) => {
   const battle = position.battle;
@@ -49,7 +50,7 @@ export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }
       </div>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 0,
+          'bg-md-gradient-primary active': mode === 0,
         })}
       >
         <div>Short Down</div>
@@ -59,7 +60,7 @@ export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 1,
+          'bg-md-gradient-primary active': mode === 1,
         })}
       >
         <div>Short Up</div>
@@ -69,7 +70,7 @@ export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 2,
+          'bg-md-gradient-primary active': mode === 2,
         })}
       >
         <div>Dual Liquidity</div>
@@ -84,7 +85,7 @@ export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }
       </div>
       <div className="flex items-center gap-4">
         <UpIcon />
-        <div className={'border border-black h-[10px] w-full bg-[#464646] rounded-full'} />
+        <VersusBar callAmount={callAmount} putAmount={putAmount} />
         <DownIcon />
       </div>
       <div className="flex items-center justify-between mt-1 text-sm">

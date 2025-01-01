@@ -127,7 +127,11 @@ export default function Home() {
 
               return (
                 <div key={battle?.battle_info?.battle}>
-                  <div className={'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4'}>
+                  <div
+                    className={
+                      'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4 drop-md-shadow'
+                    }
+                  >
                     <div className="w-[220px] flex items-center gap-4">
                       <Image src={'/hp.png'} alt={'hp'} width={64} height={64} />
                       <div>
@@ -213,7 +217,9 @@ export default function Home() {
                     </div>
                     <div className={'w-[140px] flex justify-center'}>
                       <button
-                        className={'border-2 border-black rounded-lg px-4 bg-primary font-chela text-2xl'}
+                        className={
+                          'border-2 border-black rounded-lg px-4 bg-md-gradient-primary font-chela text-2xl drop-md-shadow'
+                        }
                         onClick={() => {
                           setShowTrade(!showTrade);
                           setShow(false);
@@ -231,10 +237,10 @@ export default function Home() {
                           setIndex(i);
                         }}
                         className={
-                          'border-2 border-black rounded-full w-[40px] h-[40px] flex items-center justify-center font-chela text-4xl'
+                          'border-2 border-black rounded-full w-[30px] h-[30px] flex items-center justify-center font-chela text-4xl'
                         }
                       >
-                        <PlusIcon className={'w-[26px] h-[26px] font-semibold'} />
+                        <PlusIcon width={20} height={20} className={'font-bold'} />
                       </button>
                     </div>
                   </div>
