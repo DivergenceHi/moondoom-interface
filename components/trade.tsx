@@ -12,6 +12,7 @@ import { LongPortfolio } from '@/components/long-portfolio';
 import { CloseLong } from '@/components/close-long';
 import { PYTH_FEED_IDS, UnderlyingType } from '@/constants/pyth';
 import { formatBalance } from '@/lib/format';
+import { ClockIcon } from '@radix-ui/react-icons';
 
 const renderer = ({
   days,
@@ -26,10 +27,19 @@ const renderer = ({
   seconds: number;
   completed: boolean;
 }) => {
-  if (completed) return <>{seconds}</>;
+  const padTimeUnit = (num: number) => String(num).padStart(2, '0');
+
+  if (completed)
+    return (
+      <>
+        {seconds}
+        {hours}
+        {days}
+      </>
+    );
   return (
-    <div>
-      {days}d {hours}h:{minutes}m
+    <div className={'text-lg font-risque w-[70px]'}>
+      {padTimeUnit(hours)}:{padTimeUnit(minutes)}:{padTimeUnit(seconds)}
     </div>
   );
 };
@@ -94,7 +104,8 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
             <div className={'border-2 border-primary rounded-l-lg px-4 py-1 font-chela bg-black text-white text-2xl'}>
               {expires > 0 && <Countdown date={expires} renderer={renderer} />}
             </div>
-            <div className={'border-2 border-primary -ml-[2px] rounded-r-lg font-roboto flex items-center px-4'}>
+            <div className={'border-2 border-primary -ml-[2px] rounded-r-lg font-roboto flex items-center px-4 gap-2'}>
+              <ClockIcon width={20} height={20} />
               {dayjs(expires).format('MMMM D, YYYY')}
             </div>
           </div>

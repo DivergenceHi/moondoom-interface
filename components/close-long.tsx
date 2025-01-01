@@ -20,6 +20,7 @@ import { TradeMode } from '@/types/trade';
 import { Loading } from '@/components/loading';
 import { WAD } from '@/constants';
 import { useLongPortfolioData } from '@/hooks/use-long-portfolio-data';
+import { ExpectedPayout } from '@/components/expected-payout';
 
 export const CloseLong = ({
   battleId,
@@ -38,8 +39,7 @@ export const CloseLong = ({
 
   const { isUp, avgEntryPrice, netAmount } = useLongPortfolioData(battleId, decimals, callAmount, putAmount);
   const { address } = useAccount();
-  const [amount, setAmount] = useState(formatBalance(netAmount, decimals, 18));
-  const debounceAmount = useDebounce(amount, 1000);
+  const longAmount = formatBalance(netAmount, decimals, 18);
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const { battles } = useBattles();
   const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
@@ -73,8 +73,7 @@ export const CloseLong = ({
   console.log(spearBalance, shieldBalance);
 
   const tolerance = 10;
-  const { get, spent } = useQuote(debounceAmount, battleId, !isUp, TradeMode.EXACT_OUTPUT, decimals);
-
+  const { get, spent } = useQuote(longAmount, battleId, !isUp, TradeMode.EXACT_OUTPUT, decimals);
   const { writeContractAsync } = useWriteContract();
 
   const onMarket = async () => {
@@ -111,68 +110,54 @@ export const CloseLong = ({
     setMode(1);
   };
 
-  const can = parseUnits(amount, decimals) > 0n;
-
-  console.log(spent, get, debounceAmount, battleId, decimals);
+  const can = parseUnits(longAmount, decimals) > 0n;
   const avgClosePrice = get > 0n ? WAD - (WAD * spent) / get : 0n;
   const plAmount = (avgClosePrice - avgEntryPrice) * netAmount;
 
   return (
     <div className={'relative'}>
       <ArrowLeftIcon className={'absolute cursor-pointer'} width={26} height={26} onClick={() => setMode(1)} />
-      <div className={'font-chela text-4xl text-center pt-4'}>Close Long</div>
-      <div className={'text-center'}>Expected Payout</div>
-      <div className={'font-chela text-primary text-md-border text-4xl drop-shadow-md text-center -mt-3'}>+154%</div>
+      <div className={'font-chela text-4xl text-center pt-4 mb-4'}>Close Long</div>
+      <ExpectedPayout payout={200n} />
 
       <div className={'mt-4 flex justify-between'}>Long</div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={longAmount} readOnly />
         <div className="ml-auto font-semibold text-sm">{!isUp ? 'UP' : 'DOWN'}</div>
       </div>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-2">
         <ArrowDownIcon className={'font-bold w-[28px] h-[28px]'} />
       </div>
       <div className={'flex justify-between items-center'}>
         Pay
         <div>Balance: {formatUnits(balance, decimals)}</div>
       </div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={formatUnits(BigInt(spent), decimals)}
-          disabled
-          readOnly
-        />
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={formatUnits(BigInt(spent), decimals)} disabled readOnly />
         <div className="flex ml-auto text-sm font-semibold">USDC</div>
       </div>
 
-      <button className={clsx('btn-md-primary mt-6')} disabled={!can || loading} onClick={onMarket}>
+      <button className={clsx('btn-md-primary mt-4')} disabled={!can || loading} onClick={onMarket}>
         {loading && <Loading />}
         Confirm
       </button>
 
-      <div className="flex justify-between mt-6">
-        <div>Avg. Close Price</div>
-        <div>${formatBalance(avgClosePrice, 18, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div>Prior Entry Price</div>
-        <div>{formatUSD(formatBalance(avgEntryPrice, 18, 4))}</div>
-      </div>
-      <div className="flex justify-between items-center">
-        <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary text-xs'}>
-          +$({formatBalance(avgClosePrice, 18, 2)} - {formatBalance(avgEntryPrice, 18, 2)})*
-          {formatBalance(netAmount, decimals, 2)} = ${formatBalance(plAmount, 18 + decimals)}
+      <div className={'mt-6 text-sm'}>
+        <div className="flex justify-between mt-6">
+          <div>Avg. Close Price</div>
+          <div>${formatBalance(avgClosePrice, 18, 2)}</div>
+        </div>
+        <div className="flex justify-between">
+          <div>Prior Entry Price</div>
+          <div>{formatUSD(formatBalance(avgEntryPrice, 18, 2))}</div>
+        </div>
+        <div className="flex justify-between items-center font-bold">
+          <div>Expected P/L</div>
+          <div className={'text-dark-primary'}>
+            +$({formatBalance(avgClosePrice, 18, 2)} - {formatBalance(avgEntryPrice, 18, 2)})*
+            {formatBalance(netAmount, decimals, 2)} = ${formatBalance(plAmount, 18 + decimals, 2)}
+          </div>
         </div>
       </div>
     </div>

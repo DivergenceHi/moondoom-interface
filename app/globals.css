@@ -37,13 +37,13 @@ body {
 }
 
 .btn-md-primary {
-  @apply text-md-border bg-md-gradient-primary font-chela text-white text-2xl text-center py-1 w-full rounded-lg border-2 border-black shadow-2xl;
+  @apply text-md-border bg-md-gradient-primary font-chela text-white text-lg text-center w-full rounded-lg border-2 border-black shadow-2xl;
   @apply flex items-center justify-center gap-2;
   @apply disabled:grayscale disabled:cursor-not-allowed;
 }
 
 .btn-md-danger {
-  @apply text-md-border bg-md-gradient-danger font-chela text-white text-2xl text-center py-1 w-full rounded-lg border-2 border-black shadow-2xl;
+  @apply text-md-border bg-md-gradient-danger font-chela text-white text-lg text-center py-1 w-full rounded-lg border-2 border-black shadow-2xl;
   @apply flex items-center justify-center gap-2;
   @apply disabled:grayscale disabled:cursor-not-allowed;
 }
@@ -75,3 +75,14 @@ body {
   color: #000000;
 }
 
+.text-md-gradient {
+  background: linear-gradient(0deg, #20BF55, #20BF55);
+}
+
+.input-md-wrapper {
+  @apply border-2 border-black rounded-lg px-3 py-[6px] flex items-center;
+}
+
+.input-md-wrapper input {
+  @apply bg-transparent outline-none appearance-none w-full;
+}

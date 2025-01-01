@@ -112,15 +112,22 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
     setLoading(false);
   };
 
-  const price = get > 0n ? (parseUnits(amount, decimals) * 10n ** 18n) / get : 0n;
+  const price = get > 0n ? (spent * 10n ** 18n) / get : 0n;
+  const plAmount = get - spent;
 
   const can = parseUnits(amount, decimals) > 0n;
   const needApprove = parseUnits(amount, decimals) > allowance;
+  const payout = spent > 0n && get > 0n ? (get * 10000n) / spent - 10000n : 0n;
 
   return (
     <div className={'relative'}>
       {owned && (
-        <ArrowLeftIcon className={'absolute cursor-pointer'} width={26} height={26} onClick={() => setMode(1)} />
+        <ArrowLeftIcon
+          className={'absolute cursor-pointer -left-2 -top-4'}
+          width={26}
+          height={26}
+          onClick={() => setMode(1)}
+        />
       )}
       <div className={'flex'}>
         <div
@@ -140,36 +147,23 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
           <Image src={'/down.png'} alt={'up'} width={186} height={125} />
         </div>
       </div>
-      <ExpectedPayout payout={120} />
+      <ExpectedPayout payout={payout} />
 
       <div className={'mt-2 flex justify-between'}>
         Pay
         <div>Balance: {formatUnits(balance, decimals)}</div>
       </div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={amount} onChange={(e) => setAmount(e.target.value)} />
         <div className="ml-auto text-symbol">USDC</div>
       </div>
 
       <div className="flex justify-center mt-2">
-        <ArrowDownIcon className={'font-bold w-[28px] h-[28px]'} />
+        <ArrowDownIcon className={'font-extrabold w-[28px] h-[28px]'} />
       </div>
       <div className={'flex justify-between -mt-4'}>Long</div>
-      <div className={'border-2 border-black rounded-lg px-3 py-2 flex items-center text-xl'}>
-        <input
-          type="text"
-          placeholder={'0.0'}
-          className={'bg-transparent outline-none appearance-none text-lg w-full'}
-          value={formatUnits(BigInt(get), decimals)}
-          disabled
-          readOnly
-        />
+      <div className={'input-md-wrapper'}>
+        <input type="text" placeholder={'0.0'} value={formatUnits(BigInt(get), decimals)} disabled readOnly />
         <div className="ml-auto text-symbol">{isUp ? 'UP' : 'DOWN'}</div>
       </div>
 
@@ -182,17 +176,19 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
         {needApprove ? 'Approve' : 'Confirm'}
       </button>
 
-      <div className="flex justify-between mt-6">
-        <div>Avg. Entry Price</div>
-        <div>${formatBalance(price, 18, 2)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div>Total Cost</div>
-        <div>${formatBalance(spent, decimals, 4)}</div>
-      </div>
-      <div className="flex justify-between">
-        <div className={'font-bold'}>Expected P/L</div>
-        <div className={'text-primary'}>+${formatBalance(get, decimals)}</div>
+      <div className={'mt-6 text-sm'}>
+        <div className="flex justify-between">
+          <div>Avg. Entry Price</div>
+          <div>${formatBalance(price, 18, 2)}</div>
+        </div>
+        <div className="flex justify-between">
+          <div>Total Cost</div>
+          <div>${formatBalance(spent, decimals, 4)}</div>
+        </div>
+        <div className="flex justify-between">
+          <div className={'font-bold'}>Expected P/L</div>
+          <div className={'text-dark-primary font-bold'}>+${formatBalance(plAmount, decimals, 4)}</div>
+        </div>
       </div>
     </div>
   );
