@@ -27,7 +27,7 @@ export const RiskIcon = forwardRef<SVGSVGElement, IconProps>(({ color = 'current
           width="17"
           height="18"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix

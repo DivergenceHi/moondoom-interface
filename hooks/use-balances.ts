@@ -33,6 +33,18 @@ export const useBalances = (battle: BattleResponseData | undefined) => {
         functionName: 'allowance',
         args: [address as Address, POSITION_MANAGER_ADDRESS],
       },
+      {
+        abi: erc20Abi,
+        address: battle?.battle_info?.spear,
+        functionName: 'allowance',
+        args: [address as Address, POSITION_MANAGER_ADDRESS],
+      },
+      {
+        abi: erc20Abi,
+        address: battle?.battle_info?.shield,
+        functionName: 'allowance',
+        args: [address as Address, POSITION_MANAGER_ADDRESS],
+      },
     ],
   });
 };
