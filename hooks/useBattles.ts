@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { BattleResponse } from '@/types/battle';
+import { BattleResponse, BattleWithCategory } from '@/types/battle';
 import { getBattles } from '@/actions/battle';
-import { parseEther } from 'viem';
+import { Address, parseEther } from 'viem';
 
-export const useBattles = () => {
+export const useBattles = (): { loading: boolean; battles: BattleWithCategory[] } => {
   const { data, isLoading } = useQuery<BattleResponse>({
     queryKey: ['battles'],
     queryFn: async () => getBattles(),
@@ -13,10 +13,16 @@ export const useBattles = () => {
 
   const mbs =
     data?.mooner.map((battle) => ({
-      ...battle,
+      id: battle.battle_info.battle as Address,
+      sqrtPriceX96: BigInt(battle.battle_info.sqrt_price_x96),
+      spearAddress: battle.battle_info.spear,
+      shieldAddress: battle.battle_info.shield,
+      currentPrice: battle.current_price,
+      past7Days: battle.past_7days,
       bk: {
         collateral: battle.battle_info.bk.collateral,
         underlying: battle.battle_info.bk.underlying,
+        expiry: BigInt(battle.battle_info.bk.expiries),
         expiries: BigInt(battle.battle_info.bk.expiries),
         strikeValue: parseEther(battle.battle_info.bk.strike_value),
       },
@@ -24,10 +30,16 @@ export const useBattles = () => {
     })) ?? [];
   const dbs =
     data?.doomer.map((battle) => ({
-      ...battle,
+      id: battle.battle_info.battle as Address,
+      sqrtPriceX96: BigInt(battle.battle_info.sqrt_price_x96),
+      spearAddress: battle.battle_info.spear,
+      shieldAddress: battle.battle_info.shield,
+      currentPrice: battle.current_price,
+      past7Days: battle.past_7days,
       bk: {
         collateral: battle.battle_info.bk.collateral,
         underlying: battle.battle_info.bk.underlying,
+        expiry: BigInt(battle.battle_info.bk.expiries),
         expiries: BigInt(battle.battle_info.bk.expiries),
         strikeValue: parseEther(battle.battle_info.bk.strike_value),
       },
@@ -35,17 +47,23 @@ export const useBattles = () => {
     })) ?? [];
   const tbs =
     data?.trending.map((battle) => ({
-      ...battle,
+      id: battle.battle_info.battle as Address,
+      sqrtPriceX96: BigInt(battle.battle_info.sqrt_price_x96),
+      spearAddress: battle.battle_info.spear,
+      shieldAddress: battle.battle_info.shield,
+      currentPrice: battle.current_price,
+      past7Days: battle.past_7days,
       bk: {
         collateral: battle.battle_info.bk.collateral,
         underlying: battle.battle_info.bk.underlying,
+        expiry: BigInt(battle.battle_info.bk.expiries),
         expiries: BigInt(battle.battle_info.bk.expiries),
         strikeValue: parseEther(battle.battle_info.bk.strike_value),
       },
       category: 'trending',
     })) ?? [];
   return {
-    isLoading,
+    loading: isLoading,
     battles: [...mbs, ...dbs, ...tbs],
   };
 };

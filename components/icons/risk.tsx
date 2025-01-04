@@ -62,8 +62,8 @@ export const RiskIcon = forwardRef<SVGSVGElement, IconProps>(({ color = 'current
           y2="2.74108"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.485" stop-color="#FF0000" />
-          <stop offset="0.4851" stop-color="#D3D3D3" />
+          <stop offset="0.485" stopColor="#FF0000" />
+          <stop offset="0.4851" stopColor="#D3D3D3" />
         </linearGradient>
       </defs>
     </svg>

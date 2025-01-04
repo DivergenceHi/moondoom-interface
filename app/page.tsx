@@ -25,9 +25,10 @@ export default function Home() {
   const [showAdd, setShowAdd] = useState(false);
   const [index, setIndex] = useState(-1);
   const [showTrade, setShowTrade] = useState(false);
-  const { battles, isLoading } = useBattles();
+  const { battles, loading } = useBattles();
   const [category, setCategory] = useState('mooner');
   const filterBattles = battles?.filter((battle) => battle.category === category);
+  console.log(battles);
 
   useEffect(() => {
     if (battles && battles.length > 0) {
@@ -107,7 +108,7 @@ export default function Home() {
               <div className="w-[100px] text-center">Liquidity</div>
             </div>
 
-            {isLoading && (
+            {loading && (
               <div className={'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4 h-[100px]'}>
                 <div className={'w-[60px] bg-gray-100 h-[60px] animate-pulse rounded-lg'}></div>
                 <div className={'ml-4'}>
@@ -118,15 +119,15 @@ export default function Home() {
             )}
 
             {filterBattles?.map((battle, i: number) => {
-              const priceChange = calculatePriceChange(battle.past_7days[0].price, battle.current_price);
-              const past7DaysPriceChanges = calculateSevenDayChanges(battle.past_7days, battle.current_price);
-              const shieldPrice = getPriceFromSqrtPriceX96(battle.battle_info.sqrt_price_x96);
+              const priceChange = calculatePriceChange(battle.past7Days[0].price, battle.currentPrice);
+              const past7DaysPriceChanges = calculateSevenDayChanges(battle.past7Days, battle.currentPrice);
+              const shieldPrice = getPriceFromSqrtPriceX96(battle.sqrtPriceX96.toString());
               const spearPrice = new BigNumber(1).minus(shieldPrice);
               const shieldpayout = new BigNumber(1).div(shieldPrice);
               const spearpayout = new BigNumber(1).div(spearPrice);
 
               return (
-                <div key={battle?.battle_info?.battle}>
+                <div key={battle?.id}>
                   <div
                     className={
                       'flex items-center bg-white rounded-lg border-2 border-black mt-4 px-6 py-4 drop-md-shadow'
@@ -135,13 +136,13 @@ export default function Home() {
                     <div className="w-[220px] flex items-center gap-4">
                       <Image src={'/hp.png'} alt={'hp'} width={64} height={64} />
                       <div>
-                        <div className={'text-xl font-bold font-roboto'}>{battle.battle_info.bk.underlying}</div>
-                        <div>{ellipseAddress(battle.battle_info.battle)}</div>
+                        <div className={'text-xl font-bold font-roboto'}>{battle.bk.underlying}</div>
+                        <div>{ellipseAddress(battle.id)}</div>
                       </div>
                     </div>
 
                     <div className="w-[120px] font-chela text-3xl">
-                      ${parseFloat(battle.current_price).toFixed(2)}
+                      ${parseFloat(battle.currentPrice).toFixed(2)}
                       <div
                         className={clsx('font-roboto text-sm', {
                           'text-primary': priceChange.isPositive,
@@ -245,8 +246,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="px-8">
-                    <AddLiquidity show={show && index === i} battleId={battle.battle_info.battle} />
-                    <Trade show={showTrade && index === i} battleId={battle.battle_info.battle} />
+                    <AddLiquidity show={show && index === i} battleId={battle.id} />
+                    <Trade show={showTrade && index === i} battleId={battle.id} />
                   </div>
                 </div>
               );

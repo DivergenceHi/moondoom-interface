@@ -1,4 +1,4 @@
-import { BattleResponseData, LiquidityType } from '@/types/battle';
+import { Battle, BattleResponseData, LiquidityType } from '@/types/battle';
 
 export interface Owed {
   collateralIn: bigint;
@@ -16,7 +16,7 @@ export enum PositionState {
 
 export interface ShortPosition {
   tokenId: bigint;
-  battle?: BattleResponseData;
+  battle?: Battle;
   tickLower: number;
   tickUpper: number;
   liquidity: bigint;
@@ -26,4 +26,12 @@ export interface ShortPosition {
   seed: bigint;
   spearObligation: bigint;
   shieldObligation: bigint;
+}
+
+export interface LongPosition {
+  battle: Battle;
+  isCall: boolean;
+  amount: bigint;
+  cost: bigint;
+  entryPrice: bigint;
 }

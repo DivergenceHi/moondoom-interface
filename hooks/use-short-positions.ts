@@ -3,7 +3,7 @@ import { Address } from 'viem';
 import { QuoterABI } from '@/constants/abis/quoter';
 import { QUOTER_ADDRESS } from '@/constants/contracts';
 
-export const useUserShortPositions = () => {
+export const useShortPositions = () => {
   const { address } = useAccount();
 
   return useReadContract({

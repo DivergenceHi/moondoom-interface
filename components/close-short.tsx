@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { formatUnits } from 'viem';
 import { formatBalance } from '@/lib/format';
 import { COLLATERALS } from '@/constants/collaterals';
 import { Loading } from '@/components/loading';
@@ -19,7 +18,7 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
     (c) => c.address.toLowerCase() === position?.battle?.bk?.collateral?.toLowerCase(),
   );
   const shieldPrice = BigInt(
-    getPriceFromSqrtPriceX96(position?.battle?.battle_info?.sqrt_price_x96 ?? '0')
+    getPriceFromSqrtPriceX96(position?.battle?.sqrtPriceX96.toString() ?? '0')
       .multipliedBy(WAD.toString())
       .toFixed(0),
   );
@@ -56,7 +55,7 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
   const { removeLiquidity, removing } = useRemoveLiquidity(position?.tokenId, refetch);
   const { redeemObligation, redeeming } = useRedeemObligation(position?.tokenId);
   const { approve, approving } = useApprove(
-    isUp ? battle?.battle_info?.spear : battle?.battle_info?.shield,
+    isUp ? battle?.spearAddress : battle?.shieldAddress,
     POSITION_MANAGER_ADDRESS,
     burnAmount,
     () => {

@@ -1,11 +1,9 @@
 import clsx from 'clsx';
-import { Address, erc20Abi, formatUnits, parseUnits } from 'viem';
+import { Address, formatUnits, parseUnits } from 'viem';
 import { ArrowDownIcon, ArrowLeftIcon } from '@radix-ui/react-icons';
 import { formatBalance, formatUSD } from '@/lib/format';
-import { useAccount, useReadContracts, useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { useState } from 'react';
-import { useDebounce } from '@/hooks/useDebounce';
-import { COLLATERALS } from '@/constants/collaterals';
 import { useBattles } from '@/hooks/useBattles';
 import { useQuote } from '@/hooks/useQuote';
 import { BigNumber } from 'bignumber.js';
@@ -43,7 +41,7 @@ export const CloseLong = ({
   const { address } = useAccount();
   const longAmount = formatBalance(netAmount, decimals, 18);
   const { battles } = useBattles();
-  const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
+  const battle = battles?.find((battle) => battle.id === battleId);
 
   const { data, refetch } = useBalances(battle);
   const balance = data?.[0]?.result ?? 0n;
@@ -66,7 +64,7 @@ export const CloseLong = ({
         .toFixed(0, BigNumber.ROUND_UP);
 
       const args = {
-        battleKey: battle.bk,
+        battleKey: { ...battle.bk },
         tradeType: !isUp ? 0 : 1,
         amountSpecified: spent,
         recipient: address as Address,

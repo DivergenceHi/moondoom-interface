@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Battle, BattleResponse, BattleResponseData, LiquidityType } from '@/types/battle';
+import { Battle, LiquidityType } from '@/types/battle';
 import dayjs from 'dayjs';
 import { useAccount } from 'wagmi';
 import { useEffect, useMemo, useState } from 'react';
@@ -17,19 +17,13 @@ export const useAmountOfSTokenByMint = (
   min: string,
   max: string,
   collateral: Collateral | undefined,
-  battle: BattleResponseData | undefined,
+  battle: Battle | undefined,
 ) => {
   const { address } = useAccount();
   const [finalAmount, setFinalAmount] = useState(0n);
 
-  const minX96 = useMemo(
-    () => new BigNumber(battle?.battle_info.sqrt_price_x96.toString() ?? '0').multipliedBy(0.95),
-    [battle],
-  );
-  const maxX96 = useMemo(
-    () => new BigNumber(battle?.battle_info.sqrt_price_x96.toString() ?? '0').multipliedBy(1.05),
-    [battle],
-  );
+  const minX96 = useMemo(() => new BigNumber(battle?.sqrtPriceX96.toString() ?? '0').multipliedBy(0.95), [battle]);
+  const maxX96 = useMemo(() => new BigNumber(battle?.sqrtPriceX96.toString() ?? '0').multipliedBy(1.05), [battle]);
 
   useEffect(() => {
     if (!battle || !battle.bk) return;

@@ -1,14 +1,23 @@
 import { Address } from 'viem';
 
 export interface Battle {
-  battle: Address;
+  id: Address;
   bk: BattleKey;
   sqrtPriceX96: bigint;
+  spearAddress?: Address;
+  shieldAddress?: Address;
+}
+
+export interface BattleWithCategory extends Battle {
+  category: string;
+  currentPrice: string;
+  past7Days: PriceData[];
 }
 
 export interface BattleKey {
-  collateral: `0x${string}`;
+  collateral: Address;
   underlying: string;
+  // expiry: bigint;
   expiries: bigint;
   strikeValue: bigint;
 }

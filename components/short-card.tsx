@@ -5,7 +5,7 @@ import { useAmountOfSTokenByMint } from '@/hooks/useAmountOfSTokenByMint';
 import { Address, erc20Abi, parseEther, parseUnits } from 'viem';
 import { findCorrectTick } from '@/lib/tickAndPrice';
 import dayjs from 'dayjs';
-import { BattleResponseData, LiquidityType } from '@/types/battle';
+import { Battle, LiquidityType } from '@/types/battle';
 import { TradeAbi } from '@/constants/abis/trade';
 import { POSITION_MANAGER_ADDRESS } from '@/constants/contracts';
 import { base } from 'viem/chains';
@@ -23,7 +23,7 @@ export const ShortCard = ({
   refetch,
   setIndex,
 }: {
-  battle: BattleResponseData | undefined;
+  battle: Battle | undefined;
   refetch: () => void;
   setIndex: (index: number) => void;
 }) => {
@@ -33,7 +33,7 @@ export const ShortCard = ({
   const [mode, setMode] = useState<number>(-1); // 0 => up, 1 => down, 2 => dual
   const { writeContractAsync } = useWriteContract();
 
-  const sqrtX96 = battle?.battle_info?.sqrt_price_x96 ?? '0';
+  const sqrtX96 = battle?.sqrtPriceX96.toString() ?? '0';
   const shieldPrice = getPriceFromSqrtPriceX96(sqrtX96);
 
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
@@ -106,7 +106,7 @@ export const ShortCard = ({
 
       const args = {
         battleKey: {
-          expiries: battle.bk.expiries,
+          expiries: battle.bk.expiry,
           collateral: battle.bk.collateral,
           underlying: battle.bk.underlying,
           strikeValue: battle.bk.strikeValue,

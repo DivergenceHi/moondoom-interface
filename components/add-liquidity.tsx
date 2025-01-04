@@ -3,7 +3,7 @@
 import { useBattles } from '@/hooks/useBattles';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { useUserShortPositions } from '@/hooks/use-user-short-positions';
+import { useShortPositions } from '@/hooks/use-short-positions';
 import { AddLiquidityGuide } from '@/components/add-liquidity-guide';
 import { ShortCard } from '@/components/short-card';
 import { useState } from 'react';
@@ -17,8 +17,8 @@ dayjs.extend(utc);
 export const AddLiquidity = ({ show, battleId }: { show: boolean; battleId: string }) => {
   const [index, setIndex] = useState(1);
   const { battles } = useBattles();
-  const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
-  const { data: totalPositions, refetch } = useUserShortPositions();
+  const battle = battles?.find((battle) => battle.id === battleId);
+  const { data: totalPositions, refetch } = useShortPositions();
   const positions = totalPositions
     ?.filter((position) => position.battleAddr.toLowerCase() === battleId)
     .sort((a: ShortPosition, b: ShortPosition) => Number(b.tokenId) - Number(a.tokenId));

@@ -1,7 +1,6 @@
-import { useAccount, useReadContracts } from 'wagmi';
 import { COLLATERALS } from '@/constants/collaterals';
 import dayjs from 'dayjs';
-import { Address, erc20Abi } from 'viem';
+import { Address } from 'viem';
 import { usePriceStream } from '@/hooks/use-price-stream';
 import PriceChart from '@/components/price-chart';
 import { useBattles } from '@/hooks/useBattles';
@@ -45,11 +44,11 @@ const renderer = ({
   );
 };
 
-export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) => {
+export const Trade = ({ show, battleId }: { show: boolean; battleId: Address }) => {
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
-  const battle = battles?.find((battle) => battle.battle_info.battle === battleId);
+  const battle = battles?.find((battle) => battle.id === battleId);
   const strikeValue = battle?.bk?.strikeValue ?? 0n;
 
   const { data } = useBalances(battle);
@@ -102,7 +101,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
         {mode === 0 && <LongCard setMode={setMode} owned={owned} />}
         {mode === 1 && (
           <LongPortfolio
-            battleId={battle?.battle_info?.battle as Address}
+            battleId={battle?.id as Address}
             setMode={setMode}
             callAmount={spearBalance}
             putAmount={shieldBalance}
@@ -111,7 +110,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: string }) =
         )}
         {mode === 2 && (
           <CloseLong
-            battleId={battle?.battle_info?.battle as Address}
+            battleId={battle?.id as Address}
             setMode={setMode}
             callAmount={spearBalance}
             putAmount={shieldBalance}

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { ShortPosition } from '@/types/position';
-import { getPriceFromTick } from '@divergence-protocol/diver-sdk';
+import { getPriceFromTick, getTickFromSqrtPriceX96 } from '@divergence-protocol/diver-sdk';
 import { COLLATERALS } from '@/constants/collaterals';
 import { formatBalance } from '@/lib/format';
 import { UpIcon } from '@/components/icons/up';
@@ -8,14 +8,13 @@ import { DownIcon } from '@/components/icons/down';
 import { VersusBar } from '@/components/versus-bar';
 
 export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }) => {
-  const battle = position.battle;
   const currentCollateral = COLLATERALS?.find(
     (c) => c.address.toLowerCase() === position?.battle?.bk?.collateral?.toLowerCase(),
   );
   const collateralSymbol = currentCollateral?.name;
   const decimals = currentCollateral?.decimals ?? 18;
   // const shieldPrice = getPriceFromSqrtPriceX96(battle.battle_info.sqrt_price_x96);
-  const tick = Number(battle?.battle_info.tick ?? 0);
+  const tick = Number(getTickFromSqrtPriceX96(position?.battle?.sqrtPriceX96.toString() ?? '0'));
   const min = getPriceFromTick(position.tickLower);
   const max = getPriceFromTick(position.tickUpper);
 

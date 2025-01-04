@@ -40,7 +40,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   const allowance = data?.[3]?.result ?? 0n;
 
   const tolerance = 10;
-  const { get, spent } = useQuote(debounceAmount, battle?.battle_info.battle, isUp, TradeMode.EXACT_INPUT, decimals);
+  const { get, spent } = useQuote(debounceAmount, battle?.id, isUp, TradeMode.EXACT_INPUT, decimals);
 
   const { writeContractAsync } = useWriteContract();
 
@@ -53,7 +53,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
         .toFixed(0, BigNumber.ROUND_UP);
 
       const args = {
-        battleKey: battle.bk,
+        battleKey: { ...battle?.bk },
         tradeType: isUp ? 0 : 1,
         amountSpecified: parseUnits(amount, decimals),
         recipient: address as Address,

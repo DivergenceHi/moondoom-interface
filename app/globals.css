@@ -127,3 +127,82 @@ body {
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+.DropdownMenuContent,
+.DropdownMenuSubContent {
+  min-width: 100px;
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.DropdownMenuContent[data-side="top"],
+.DropdownMenuSubContent[data-side="top"] {
+  animation-name: slideDownAndFade;
+}
+.DropdownMenuContent[data-side="right"],
+.DropdownMenuSubContent[data-side="right"] {
+  animation-name: slideLeftAndFade;
+}
+.DropdownMenuContent[data-side="bottom"],
+.DropdownMenuSubContent[data-side="bottom"] {
+  animation-name: slideUpAndFade;
+}
+.DropdownMenuContent[data-side="left"],
+.DropdownMenuSubContent[data-side="left"] {
+  animation-name: slideRightAndFade;
+}
+
+.DropdownMenuItem {
+  @apply py-2 px-4 border-b-2 border-b-black cursor-pointer text-lg;
+}
+
+.DropdownMenuItem[data-disabled],
+.DropdownMenuCheckboxItem[data-disabled],
+.DropdownMenuRadioItem[data-disabled],
+.DropdownMenuSubTrigger[data-disabled] {
+  pointer-events: none;
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
