@@ -44,7 +44,7 @@ export const PortfolioPositions = () => {
                   )}
                 </div>
                 <div className={'w-[140px] text-center'}>
-                  {dayjs(Number(position.battle.bk.expiry) * 1000).format('MMM DD, YYYY')}
+                  {dayjs(Number(position.battle.bk.expiries) * 1000).format('MMM DD, YYYY')}
                 </div>
                 <div className={'w-[120px] text-center'}>{formatBalance(position.amount, collateral?.decimals)}</div>
                 <div className={'w-[120px] text-center'}>{formatBalance(position.entryPrice, 18)}</div>

@@ -17,7 +17,7 @@ export interface BattleWithCategory extends Battle {
 export interface BattleKey {
   collateral: Address;
   underlying: string;
-  // expiry: bigint;
+  expiry: bigint;
   expiries: bigint;
   strikeValue: bigint;
 }
