@@ -1,10 +1,10 @@
 import { COLLATERALS } from '@/constants/collaterals';
 import { TriangleDownIcon, TriangleUpIcon } from '@radix-ui/react-icons';
-import dayjs from 'dayjs';
 import { formatBalance } from '@/lib/format';
 import { useLongPositions } from '@/hooks/use-long-positions';
+import { formatExpiry } from '@/lib/date';
 
-export const PortfolioPositions = () => {
+export const PortfolioLongPositions = () => {
   const { longPositions } = useLongPositions();
 
   return (
@@ -15,9 +15,8 @@ export const PortfolioPositions = () => {
           boxShadow: 'inset 0px 4px 17px #005849',
         }}
       >
-        <div className={'w-[80px]'}>Type</div>
         <div className={'w-[120px] text-center'}>Coin</div>
-        <div className={'w-[140px] text-center'}>Expiry</div>
+        <div className={'w-[200px] text-center'}>Expiry</div>
         <div className={'w-[120px] text-center'}>Size</div>
         <div className={'w-[120px] text-center'}>Entry Price</div>
         <div className={'w-[110px] text-center'}>Cost</div>
@@ -31,10 +30,10 @@ export const PortfolioPositions = () => {
         )}
         {longPositions?.map((position) => {
           const collateral = COLLATERALS.find((c) => c.address === position.battle.bk.collateral);
+          const plAmount = position.amount - position.cost;
           return (
-            <div key={position.battle.id}>
+            <div key={position.battle.id + position.isCall}>
               <div className={'flex items-center px-6 py-2'}>
-                <div className={'w-[80px] text-dark-primary'}>LONG</div>
                 <div className={'w-[120px] flex justify-center items-center'}>
                   {position.battle.bk.underlying}/USD
                   {position.isCall ? (
@@ -43,13 +42,11 @@ export const PortfolioPositions = () => {
                     <TriangleDownIcon width={20} height={20} className={'text-dark-danger'} />
                   )}
                 </div>
-                <div className={'w-[140px] text-center'}>
-                  {dayjs(Number(position.battle.bk.expiries) * 1000).format('MMM DD, YYYY')}
-                </div>
+                <div className={'w-[200px] text-center'}>{formatExpiry(position.battle.bk.expiry)}</div>
                 <div className={'w-[120px] text-center'}>{formatBalance(position.amount, collateral?.decimals)}</div>
                 <div className={'w-[120px] text-center'}>{formatBalance(position.entryPrice, 18)}</div>
                 <div className={'w-[110px] text-center'}>{formatBalance(position.cost, collateral?.decimals)}</div>
-                <div className={'w-[140px] text-center'}>+395 USDT</div>
+                <div className={'w-[140px] text-center'}>{formatBalance(plAmount, collateral?.decimals)}</div>
                 <div className={'flex justify-end  grow shrink-0 text-sm font-chela'}>
                   <button className={'text-dark-primary border border-primary rounded-xl px-3'}>Early Close</button>
                 </div>

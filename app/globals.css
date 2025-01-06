@@ -62,22 +62,30 @@ body {
 }
 
 .SelectTrigger {
-  @apply flex-between px-4 py-1 outline-none;
+  @apply px-2 py-1 outline-none cursor-pointer;
   @apply bg-cyan border-2 border-black text-xl font-roboto rounded-lg w-[160px] font-medium;
 }
 
 .SelectContent {
-  @apply bg-cyan border-2 border-black rounded-lg p-2;
+  @apply bg-cyan border-2 border-black rounded-lg px-4 py-2;
+}
+
+.SelectViewport {
+  @apply flex flex-col gap-2;
 }
 
 .SelectItem {
-  @apply text-lg font-semibold cursor-pointer flex ;
+  @apply text-lg font-semibold cursor-pointer flex items-center;
 
 }
 .SelectItem[data-highlighted] {
   @apply bg-cyan;
   outline: none;
   color: #000000;
+}
+
+.SelectItemIndicator {
+  @apply hidden;
 }
 
 .text-md-gradient {

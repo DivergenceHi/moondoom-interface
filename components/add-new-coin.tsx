@@ -1,7 +1,7 @@
 'use client';
 
 import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+import { CheckIcon, TriangleDownIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { forwardRef, useState } from 'react';
@@ -17,6 +17,7 @@ import { GainChart } from '@/components/gain-chart';
 import { useReadContract } from 'wagmi';
 import { ArenaAbi } from '@/constants/abis/arena';
 import { ARENA_ADDRESS } from '@/constants/contracts';
+import { USDCIcon } from 'web3-icons';
 
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
   ({ children, className, value, ...props }, forwardedRef) => {
@@ -36,6 +37,7 @@ SelectItem.displayName = 'SelectItem';
 export const AddNewCoin = () => {
   const [show, setShow] = useState(false);
   const [underlying, setUnderlying] = useState('BTC');
+  const [collateral, setCollateral] = useState('USDC');
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
 
   const { data } = useQuery({
@@ -72,18 +74,33 @@ export const AddNewCoin = () => {
         <div>
           <div className={'font-black text-xl'}>Underlying</div>
           <Select.Root defaultValue={'BTC'} onValueChange={(v) => setUnderlying(v)}>
-            <Select.Trigger className="SelectTrigger" defaultValue={'BTC'}>
-              <Select.Value placeholder="" />
-              <Select.Icon className="SelectIcon">
-                <ChevronDownIcon />
-              </Select.Icon>
+            <Select.Trigger className="SelectTrigger" defaultValue={'BTC'} value={underlying} asChild>
+              <div className={'flex items-center gap-2'}>
+                <Select.Value placeholder="" />
+                <TriangleDownIcon width={20} height={20} className={'ml-auto'} />
+              </div>
             </Select.Trigger>
             <Select.Portal>
-              <Select.Content className="SelectContent" side={'bottom'} sideOffset={10} align={'end'}>
+              <Select.Content className="SelectContent w-[160px]" sideOffset={10} side={'bottom'} position={'popper'}>
                 <Select.Viewport className="SelectViewport">
-                  <SelectItem value="BTC">BTC</SelectItem>
-                  <SelectItem value="ETH/BTC">ETH/BTC</SelectItem>
-                  <SelectItem value="SOL/ETH">SOL/ETH</SelectItem>
+                  <SelectItem value="BTC">
+                    <div className="flex items-center gap-2">
+                      <Image src={'/hp.png'} alt={'hp'} width={24} height={24} />
+                      BTC
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ETH/BTC">
+                    <div className="flex items-center gap-2">
+                      <Image src={'/hp.png'} alt={'hp'} width={24} height={24} />
+                      ETH/BTC
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="SOL/ETH">
+                    <div className="flex items-center gap-2">
+                      <Image src={'/hp.png'} alt={'hp'} width={24} height={24} />
+                      SOL/ETH
+                    </div>
+                  </SelectItem>
                 </Select.Viewport>
               </Select.Content>
             </Select.Portal>
@@ -91,17 +108,28 @@ export const AddNewCoin = () => {
         </div>
         <div>
           <div className={'font-black text-xl'}>Betting Currency</div>
-          <Select.Root defaultValue={'USDC'} onValueChange={(value) => setUnderlying(value)}>
-            <Select.Trigger className="SelectTrigger" defaultValue={'USDC'}>
-              <Select.Value placeholder="" />
-              <Select.Icon className="SelectIcon">
-                <ChevronDownIcon />
-              </Select.Icon>
+          <Select.Root defaultValue={'USDC'} onValueChange={(value) => setCollateral(value)} value={collateral}>
+            <Select.Trigger className="SelectTrigger" defaultValue={'USDC'} asChild>
+              <div className={'flex items-center gap-2'}>
+                <Select.Value placeholder="" />
+                <TriangleDownIcon width={20} height={20} className={'ml-auto'} />
+              </div>
             </Select.Trigger>
             <Select.Portal>
-              <Select.Content className="SelectContent" side={'bottom'} sideOffset={10} align={'end'}>
+              <Select.Content
+                className="SelectContent w-[160px]"
+                side={'bottom'}
+                sideOffset={10}
+                align={'end'}
+                position={'popper'}
+              >
                 <Select.Viewport className="SelectViewport">
-                  <SelectItem value="USDC">USDC</SelectItem>
+                  <SelectItem value="USDC">
+                    <div className="flex items-center gap-2">
+                      <USDCIcon width={20} height={20} />
+                      USDC
+                    </div>
+                  </SelectItem>
                 </Select.Viewport>
               </Select.Content>
             </Select.Portal>

@@ -14,3 +14,7 @@ export function getNextUTC8() {
 
   return today8am;
 }
+
+export const formatExpiry = (expiry: bigint) => {
+  return dayjs(Number(expiry) * 1000).format('MMM DD, YYYY HH:mm [UTC]');
+};

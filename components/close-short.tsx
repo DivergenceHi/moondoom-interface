@@ -25,8 +25,8 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
   const spearPrice = WAD - shieldPrice;
 
   const decimals = currentCollateral?.decimals ?? 18;
-  const callAmount = position?.owed?.spearOut;
-  const putAmount = position?.owed?.shieldOut;
+  const callAmount = position?.owed?.spearOut ?? 0n;
+  const putAmount = position?.owed?.shieldOut ?? 0n;
   const isUp = callAmount > putAmount;
   const maxAmount = isUp ? callAmount : putAmount;
   const minAmount = isUp ? putAmount : callAmount;
@@ -41,9 +41,10 @@ export const CloseShort = ({ position, refetch }: { position: ShortPosition; ref
 
   const burnAmount = isUp ? callAmount : putAmount;
   const finalized = position?.state > PositionState.LiquidityAdded;
+  console.log(position.seed, position.owed.collateralIn, position.owed.fee, maxAmount);
   const receiveAmount = finalized
     ? burnAmount
-    : position?.seed + position?.owed?.collateralIn + position?.owed?.fee - maxAmount;
+    : position.seed + position.owed.collateralIn + position.owed.fee - maxAmount;
   const obligation = isUp ? callAmount - putAmount : putAmount - callAmount;
   const cost = (burnAmount * (isUp ? spearPrice : shieldPrice)) / WAD;
 

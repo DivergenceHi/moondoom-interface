@@ -95,14 +95,14 @@ export default function Home() {
             Add a New Coin
           </div>
         </div>
-        <div className="overflow-x-scroll">
+        <div className="lg:overflow-x-scroll">
           <div className={'min-w-[800px]'}>
             <div
               className={'bg-cyan border-2 border-black rounded-lg flex px-6 py-1 font-roboto text-xl font-bold mt-4'}
             >
               <div className="w-[220px]">Coin</div>
               <div className="w-[120px]">Price</div>
-              <div className="w-[200px]">Price Last Week</div>
+              <div className="w-[200px] text-center">Price Last Week</div>
               <div className="w-[300px] text-center">Odds</div>
               <div className="w-[140px] text-center">Trade</div>
               <div className="w-[100px] text-center">Liquidity</div>
@@ -153,7 +153,7 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="w-[200px] flex flex-col justify-center">
+                    <div className="w-[200px] flex flex-col justify-center items-center">
                       <div className="flex items-end gap-[1px]">
                         {past7DaysPriceChanges?.map((price, i) => (
                           <GainChart

@@ -1,6 +1,5 @@
 'use client';
 
-import { useBattles } from '@/hooks/useBattles';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useShortPositions } from '@/hooks/use-short-positions';
@@ -16,11 +15,11 @@ dayjs.extend(utc);
 
 export const AddLiquidity = ({ show, battleId }: { show: boolean; battleId: string }) => {
   const [index, setIndex] = useState(1);
-  const { battles } = useBattles();
-  const battle = battles?.find((battle) => battle.id === battleId);
-  const { data: totalPositions, refetch } = useShortPositions();
-  const positions = totalPositions
-    ?.filter((position) => position.battleAddr.toLowerCase() === battleId)
+  // const { battles } = useBattles();
+  // const battle = battles?.find((battle) => battle.id === battleId);
+  const { shortPositions, refetch } = useShortPositions();
+  const positions = shortPositions
+    ?.filter((position) => position.battle.id === battleId)
     .sort((a: ShortPosition, b: ShortPosition) => Number(b.tokenId) - Number(a.tokenId));
   const addIndex = (positions?.length ?? 0) + 1;
 
@@ -58,16 +57,12 @@ export const AddLiquidity = ({ show, battleId }: { show: boolean; battleId: stri
             {addIndex}
           </div>
         </div>
-        {index < addIndex && positions && battle && (
-          <ShortPositionPortfolio position={{ battle, ...positions[index - 1] }} />
-        )}
-        {index === addIndex && <ShortCard battle={battle} refetch={refetch} setIndex={setIndex} />}
+        {index < addIndex && positions && <ShortPositionPortfolio position={{ ...positions[index - 1] }} />}
+        {index === addIndex && <ShortCard battle={positions?.[0]?.battle} refetch={refetch} setIndex={setIndex} />}
       </div>
       <div className={'bg-cyan px-12 py-4 border-2 border-black rounded-b-2xl font-roboto'}>
         {index === addIndex && <AddLiquidityGuide />}
-        {index < addIndex && positions && battle && (
-          <CloseShort position={{ battle, ...positions[index - 1] }} refetch={refetch} />
-        )}
+        {index < addIndex && positions && <CloseShort position={{ ...positions[index - 1] }} refetch={refetch} />}
       </div>
     </div>
   );

@@ -16,7 +16,8 @@ export enum PositionState {
 
 export interface ShortPosition {
   tokenId: bigint;
-  battle?: Battle;
+  battle: Battle;
+  isCall: boolean;
   tickLower: number;
   tickUpper: number;
   liquidity: bigint;

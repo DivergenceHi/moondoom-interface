@@ -2,7 +2,8 @@
 import { Header } from '@/components/header';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { PortfolioPositions } from '@/components/portfolio-positions';
+import { PortfolioLongPositions } from '@/components/portfolio-long-positions';
+import { PortfolioShortPositions } from '@/components/portfolio-short-positions';
 
 export default function Profile() {
   const [type, setType] = useState(0);
@@ -19,22 +20,29 @@ export default function Profile() {
             className={clsx('border-2 border-primary rounded-lg px-3', { 'text-primary': type === 0 })}
             onClick={() => setType(0)}
           >
-            Positions
+            Long
           </button>
           <button
             className={clsx('border-2 border-primary rounded-lg px-3', { 'text-primary': type === 1 })}
             onClick={() => setType(1)}
           >
-            Orders
+            Short
           </button>
           <button
             className={clsx('border-2 border-primary rounded-lg px-3', { 'text-primary': type === 2 })}
             onClick={() => setType(2)}
           >
-            History
+            Long History
+          </button>
+          <button
+            className={clsx('border-2 border-primary rounded-lg px-3', { 'text-primary': type === 2 })}
+            onClick={() => setType(3)}
+          >
+            Short History
           </button>
         </div>
-        {type === 0 && <PortfolioPositions />}
+        {type === 0 && <PortfolioLongPositions />}
+        {type === 1 && <PortfolioShortPositions />}
       </div>
     </div>
   );
