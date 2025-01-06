@@ -43,6 +43,7 @@ export const useLongPositions = (): { longPositions: LongPosition[] | undefined;
       underlying: trader.battle.underlying.symbol,
       collateral: trader.battle.collateral.id as Address,
       expiry: BigInt(trader.battle.endTS),
+      expiries: BigInt(trader.battle.endTS),
       strikeValue: parseEther(trader.battle.strikeValue),
     };
     const sqrtPriceX96 = BigInt(trader.battle.sqrtPriceX96);
