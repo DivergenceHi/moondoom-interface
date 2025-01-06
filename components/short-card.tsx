@@ -35,6 +35,7 @@ export const ShortCard = ({
 
   const sqrtX96 = battle?.sqrtPriceX96.toString() ?? '0';
   const shieldPrice = getPriceFromSqrtPriceX96(sqrtX96);
+  const spearPrice = new BigNumber(1).minus(shieldPrice);
 
   const currentCollateral = COLLATERALS.find((c) => c.name === 'USDC');
   const decimals = currentCollateral?.decimals ?? 18;
@@ -49,7 +50,6 @@ export const ShortCard = ({
     currentCollateral,
     battle,
   );
-  console.log(canGet);
 
   const { data, refetch: refetchBalance } = useReadContracts({
     contracts: [
@@ -153,7 +153,7 @@ export const ShortCard = ({
         onClick={() => setMode(0)}
       >
         <div>Short Up</div>
-        <div>{shieldPrice.toFixed(2)} - 0.99</div>
+        <div>{spearPrice.toFixed(2)} - 0.99</div>
       </button>
       <button
         className={clsx('short-range-item', {
@@ -186,7 +186,7 @@ export const ShortCard = ({
       <div className={'mt-2'}>Short</div>
       <div className={'input-md-wrapper'}>
         <input type="text" placeholder={'0.0'} value={formatBalance(canGet, decimals, decimals)} disabled readOnly />
-        <div className="text-symbol ml-auto">PUT</div>
+        <div className="text-symbol ml-auto">{mode === 0 ? 'UP' : mode === 1 ? 'DOWN' : ''}</div>
       </div>
 
       <button

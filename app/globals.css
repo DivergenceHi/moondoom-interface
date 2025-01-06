@@ -63,7 +63,7 @@ body {
 
 .SelectTrigger {
   @apply px-2 py-1 outline-none cursor-pointer;
-  @apply bg-cyan border-2 border-black text-xl font-roboto rounded-lg w-[160px] font-medium;
+  @apply bg-cyan border-2 border-black text-xl font-roboto rounded-lg w-[200px] font-medium;
 }
 
 .SelectContent {

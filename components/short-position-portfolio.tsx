@@ -49,20 +49,20 @@ export const ShortPositionPortfolio = ({ position }: { position: ShortPosition }
       </div>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary active': mode === 0,
+          'bg-md-gradient-primary active': mode === 1,
         })}
       >
-        <div>Short Down</div>
+        <div>Short Up</div>
         <div>
           {min.toFixed(2)} - {max.toFixed(2)}
         </div>
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary active': mode === 1,
+          'bg-md-gradient-primary active': mode === 0,
         })}
       >
-        <div>Short Up</div>
+        <div>Short Down</div>
         <div>
           {min.toFixed(2)} - {max.toFixed(2)}
         </div>

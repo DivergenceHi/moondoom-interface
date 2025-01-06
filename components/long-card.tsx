@@ -33,6 +33,7 @@ export const LongCard = ({ setMode, owned }: { setMode: (mode: number) => void; 
   const decimals = currentCollateral?.decimals ?? 18;
   const { battles } = useBattles();
 
+  console.log(battles);
   const battle = battles?.[0];
   const { data, refetch } = useBalances(battle);
 

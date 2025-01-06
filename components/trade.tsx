@@ -61,6 +61,7 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: Address }) 
     `https://hermes.pyth.network/v2/updates/price/stream?ids[]=${PYTH_FEED_IDS[underlying as UnderlyingType]}`,
     underlying,
   );
+  console.log(priceHistory);
 
   const owned = spearBalance > 0n || shieldBalance > 0n;
 

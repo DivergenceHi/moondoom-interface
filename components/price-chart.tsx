@@ -22,8 +22,8 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
   }, [data]);
 
   const prices = chartData?.map((d) => d.price);
-  const minPrice = useMemo(() => Math.min(...[...prices, parseFloat(targetPrice)]) * 0.95, [prices]);
-  const maxPrice = useMemo(() => Math.max(...[...prices, parseFloat(targetPrice)]) * 1.05, [prices]);
+  const minPrice = useMemo(() => Math.min(...[...prices, parseFloat(targetPrice)]) * 0.98, [prices]);
+  const maxPrice = useMemo(() => Math.max(...[...prices, parseFloat(targetPrice)]) * 1.02, [prices]);
 
   const sub = maxPrice - minPrice;
 
