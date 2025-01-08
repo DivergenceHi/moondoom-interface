@@ -3,7 +3,7 @@ import { Header } from '@/components/header';
 import Image from 'next/image';
 import { GainChart } from '@/components/gain-chart';
 import { PlusIcon } from '@radix-ui/react-icons';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Trade } from '@/components/trade';
 import { useBattles } from '@/hooks/useBattles';
 import clsx from 'clsx';

@@ -1,9 +1,4 @@
 import { useShortPositions } from '@/hooks/use-short-positions';
-import { COLLATERALS } from '@/constants/collaterals';
-import { TriangleDownIcon, TriangleUpIcon } from '@radix-ui/react-icons';
-import { formatExpiry } from '@/lib/date';
-import { formatBalance } from '@/lib/format';
-import { handleUnderlying } from '@/lib/battle';
 
 export const PortfolioShortHistory = () => {
   const { shortPositions } = useShortPositions();

@@ -1,8 +1,4 @@
-import { COLLATERALS } from '@/constants/collaterals';
-import { TriangleDownIcon, TriangleUpIcon } from '@radix-ui/react-icons';
-import { formatBalance } from '@/lib/format';
 import { useLongPositions } from '@/hooks/use-long-positions';
-import { formatExpiry } from '@/lib/date';
 
 export const PortfolioLongHistory = () => {
   const { longPositions } = useLongPositions();

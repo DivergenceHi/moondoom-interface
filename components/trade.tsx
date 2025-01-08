@@ -1,5 +1,4 @@
 import { COLLATERALS } from '@/constants/collaterals';
-import dayjs from 'dayjs';
 import { Address } from 'viem';
 import { usePriceStream } from '@/hooks/use-price-stream';
 import PriceChart from '@/components/price-chart';
