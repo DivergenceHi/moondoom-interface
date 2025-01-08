@@ -41,7 +41,7 @@ export const usePriceStream = (endpoint: string, underlying: string) => {
         const data = JSON.parse(event.data);
         const price = formatUnits(data?.parsed[0]?.ema_price?.price, 8);
         const now = Date.now();
-        if (now - lastUpdateTimeRef.current < 10000) {
+        if (now - lastUpdateTimeRef.current < 60000) {
           return;
         }
         lastUpdateTimeRef.current = now;

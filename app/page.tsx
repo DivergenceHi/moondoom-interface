@@ -30,11 +30,11 @@ export default function Home() {
   const filterBattles = battles?.filter((battle) => battle.category === category);
   console.log(battles);
 
-  useEffect(() => {
-    if (battles && battles.length > 0) {
-      setCategory(battles[0].category);
-    }
-  }, [battles]);
+  // useEffect(() => {
+  //   if (battles && battles.length > 0) {
+  //     setCategory(battles[0].category);
+  //   }
+  // }, [battles]);
 
   if (showAdd) {
     return (

@@ -13,6 +13,7 @@ import { PYTH_FEED_IDS, UnderlyingType } from '@/constants/pyth';
 import { formatBalance } from '@/lib/format';
 import { ClockIcon } from '@radix-ui/react-icons';
 import { useBalances } from '@/hooks/use-balances';
+import { formatExpiry } from '@/lib/date';
 
 const renderer = ({
   days,
@@ -85,10 +86,10 @@ export const Trade = ({ show, battleId }: { show: boolean; battleId: Address }) 
             </div>
             <div className={'border-2 border-primary -ml-[2px] rounded-r-lg font-roboto flex items-center px-4 gap-2'}>
               <ClockIcon width={20} height={20} />
-              {dayjs(expires).format('MMMM D, YYYY')}
+              {formatExpiry(battle?.bk.expiries)}
             </div>
           </div>
-          <PriceChart data={priceHistory} targetPrice={formatBalance(strikeValue, 18, 2)} />
+          <PriceChart data={priceHistory} targetPrice={formatBalance(strikeValue, 18, 6)} />
         </div>
 
         <div className="bg-white px-12 py-8 border-[3px] border-black rounded-2xl text-center">

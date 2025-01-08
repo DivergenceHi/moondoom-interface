@@ -4,6 +4,7 @@ import { ArrowFillIcon } from '@/components/icons/arrow-fill';
 import { TargetIcon } from '@/components/icons/target';
 import { calculatePriceChange } from '@/lib/display';
 import clsx from 'clsx';
+import { getNextUTC8 } from '@/lib/date';
 
 interface PriceChartProps {
   targetPrice: string;
@@ -14,16 +15,30 @@ interface PriceChartProps {
 }
 
 export default function PriceChart({ data, targetPrice }: PriceChartProps) {
+  const start = getNextUTC8().unix() - 24 * 3600;
+  const end = getNextUTC8().unix();
+  const slot = 60;
   const chartData = useMemo(() => {
-    return data.map((item) => ({
-      time: new Date(item.timestamp).toLocaleTimeString(),
-      price: parseFloat(item.price),
-    }));
-  }, [data]);
+    const points = [];
+    for (let t = start; t <= end; t += slot) {
+      const dataPoint = data.find((item) => item.timestamp === t * 1000);
 
-  const prices = chartData?.map((d) => d.price);
-  const minPrice = useMemo(() => Math.min(...[...prices, parseFloat(targetPrice)]) * 0.98, [prices]);
-  const maxPrice = useMemo(() => Math.max(...[...prices, parseFloat(targetPrice)]) * 1.02, [prices]);
+      console.log(data[data.length - 1]?.timestamp, t * 1000);
+      points.push({
+        time: new Date(t * 1000).toLocaleTimeString(),
+        price: dataPoint ? parseFloat(dataPoint?.price ?? '0') : null,
+        isLatest: !!(dataPoint && t * 1000 === data[data.length - 1]?.timestamp),
+      });
+    }
+    return points;
+  }, [data, start, end, slot]);
+
+  console.log(chartData);
+
+  const prices = chartData?.map((d) => d.price).filter((d) => d !== null) as number[];
+  const minPrice = useMemo(() => Math.min(...[...prices, parseFloat(targetPrice)]) * 0.99, [prices]);
+  const maxPrice = useMemo(() => Math.max(...[...prices, parseFloat(targetPrice)]) * 1.01, [prices]);
+  console.log(minPrice, maxPrice);
 
   const sub = maxPrice - minPrice;
 
@@ -97,10 +112,6 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
               <stop offset="0%" stopColor="rgb(239, 68, 68)" stopOpacity={0.5} />
               <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity={0.5} />
             </linearGradient>
-            <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
             <linearGradient id="colorUpper" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="rgb(34, 197, 94)" stopOpacity={0.5} />
               <stop offset="100%" stopColor="rgb(34, 197, 94)" stopOpacity={0.5} />
@@ -120,13 +131,42 @@ export default function PriceChart({ data, targetPrice }: PriceChartProps) {
           />
           <YAxis
             domain={[minPrice, maxPrice]}
-            tickFormatter={(value) => value.toFixed(2)}
+            tickFormatter={(value) => value.toFixed(6)}
             orientation="right"
             tick={{ fontSize: 11, fill: '#999' }}
             tickMargin={10}
           />
-          <Tooltip formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']} />
-          <Area type="monotone" dataKey="price" stroke="#8884d8" fill="url(#priceGradient)" />
+          <Tooltip formatter={(value: number) => [`$${value.toFixed(6)}`, 'Price']} />
+          <Area
+            type="linear"
+            dataKey="price"
+            stroke="#07A085"
+            strokeWidth={2}
+            fill="none"
+            dot={(props) => {
+              const { cx, cy, payload } = props;
+              if (payload.isLatest && payload.price != null) {
+                return (
+                  <g>
+                    <line x1={cx} y1={cy} x2="89%" y2={cy} stroke="#07A085" strokeWidth={1} strokeDasharray="3 3" />
+                    <circle cx={cx} cy={cy} r={4} fill="none" stroke="#07A085" strokeWidth={2} opacity="0.5">
+                      <animate attributeName="r" from="4" to="10" dur="1.5s" begin="0s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="opacity"
+                        from="0.5"
+                        to="0"
+                        dur="1.5s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle cx={cx} cy={cy} r={2} fill="#07A085" stroke="green" strokeWidth={1} />
+                  </g>
+                );
+              }
+              return <circle cx={cx} cy={cy} r={0} fill="none" stroke="white" strokeWidth={0} />;
+            }}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
