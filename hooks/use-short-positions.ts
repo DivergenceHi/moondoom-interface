@@ -18,6 +18,7 @@ interface nftResponse {
   tickLowerIdx: number;
   tickUpperIdx: number;
   collateralSeed: string;
+  feeOwed: string;
   battle: {
     address: string;
     underlying: {
@@ -83,7 +84,7 @@ export const useShortPositions = (): {
       state: nft.status,
       owed: {
         collateralIn: BigInt(nft.collateralSeed),
-        fee: 0n,
+        fee: BigInt(nft.feeOwed),
         spearOut: BigInt(nft.spearOutOwed),
         shieldOut: BigInt(nft.shieldOutOwed),
       },

@@ -17,3 +17,11 @@ export const getSqrtPriceX96FromMin = (isSpear: boolean, min: string) => {
     return getSqrtPriceX96FromTickV3(Number(findCorrectTick(min)) - 1).toFixed(0);
   }
 };
+
+export const handleUnderlying = (underlying: string) => {
+  if (underlying.includes('/')) {
+    return underlying;
+  } else {
+    return underlying + '/USD';
+  }
+};

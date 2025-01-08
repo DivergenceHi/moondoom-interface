@@ -32,8 +32,6 @@ export const AddNewCoin = () => {
   const past7DaysPriceChanges = calculateSevenDayChanges(data?.past_7days, data?.current_price);
   const strikeValue = parseEther(data?.past_7days?.[0]?.price ?? '0');
 
-  console.log(strikeValue);
-
   const { data: battleData } = useReadContract({
     abi: ArenaAbi,
     address: ARENA_ADDRESS,
@@ -49,7 +47,6 @@ export const AddNewCoin = () => {
   });
 
   const isCreated = battleData !== '0x0000000000000000000000000000000000000000';
-  console.log(battleData);
 
   return (
     <>
@@ -138,14 +135,14 @@ export const AddNewCoin = () => {
           {isCreated ? (
             <>Created</>
           ) : (
-            <button
-              className={
-                'bg-primary font-roboto px-4 py-2 rounded-xl border-2 border-black text-white font-bold text-xl'
-              }
+            <Image
+              src={'/new-deposit-btn.png'}
+              alt={'btn'}
+              width={178}
+              height={39}
               onClick={() => setShow(true)}
-            >
-              New Deposit
-            </button>
+              className={'cursor-pointer'}
+            />
           )}
         </div>
       </div>

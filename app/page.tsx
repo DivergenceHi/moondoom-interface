@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Trade } from '@/components/trade';
 import { useBattles } from '@/hooks/useBattles';
 import clsx from 'clsx';
-import { calculatePriceChange, calculateSevenDayChanges, ellipseAddress } from '@/lib/display';
+import { calculatePriceChange, calculateSevenDayChanges } from '@/lib/display';
 import { getPriceFromSqrtPriceX96 } from '@divergence-protocol/diver-sdk';
 import { BigNumber } from 'bignumber.js';
 import { AddLiquidity } from '@/components/add-liquidity';
@@ -137,7 +137,6 @@ export default function Home() {
                       <Image src={'/hp.png'} alt={'hp'} width={64} height={64} />
                       <div>
                         <div className={'text-xl font-bold font-roboto'}>{battle.bk.underlying}</div>
-                        <div>{ellipseAddress(battle.id)}</div>
                       </div>
                     </div>
 

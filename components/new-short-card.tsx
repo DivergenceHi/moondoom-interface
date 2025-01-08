@@ -97,7 +97,6 @@ export const NewShortCard = ({
         expiries: BigInt(getNextUTC8().unix()),
         strikeValue,
       };
-      console.log(battleKey);
       const createArgs = {
         bk: battleKey,
         sqrtPriceX96: BigInt(x96),
@@ -147,7 +146,7 @@ export const NewShortCard = ({
     <div className={'pt-12'}>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 0,
+          'bg-md-gradient-primary active': mode === 0,
         })}
         onClick={() => setMode(0)}
       >
@@ -156,7 +155,7 @@ export const NewShortCard = ({
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 1,
+          'bg-md-gradient-primary active': mode === 1,
         })}
         onClick={() => setMode(1)}
       >
@@ -165,7 +164,7 @@ export const NewShortCard = ({
       </button>
       <button
         className={clsx('short-range-item', {
-          'bg-md-gradient-primary': mode === 2,
+          'bg-md-gradient-primary active': mode === 2,
         })}
         onClick={() => setMode(2)}
       >
@@ -198,7 +197,7 @@ export const NewShortCard = ({
           disabled
           readOnly
         />
-        <div className="text-symbol ml-auto">PUT</div>
+        <div className="text-symbol ml-auto">{mode === 0 ? 'UP' : mode === 1 ? 'DOWN' : ''}</div>
       </div>
 
       <button
